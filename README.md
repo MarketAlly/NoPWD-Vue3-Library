@@ -2,9 +2,7 @@
 
 Easy NoPWD Authentication Library for Vue3
 
-![nopwd-login-library](assets/NOPWD.png)
-
-NoPWD is a powerful, easy-to-use library for incorporating NoPWD based login functionality into your Vue applications.
+NoPWD is a powerful, easy-to-use library for incorporating NoPWD based login functionality into your Vue 3 applications.
 
 ## 🚀 Features
 
@@ -18,7 +16,7 @@ NoPWD is a powerful, easy-to-use library for incorporating NoPWD based login fun
 Install NoPWD with npm:
 
 ``bash
-npm install @marketally/nopwd-login-library
+npm install @marketally/nopwd-vue3-library
 
 ## 🎈 Usage
 
@@ -27,13 +25,13 @@ Here's a basic example of how to use
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import plugin from '@marketally/nopwd-login-library'
+import plugin from '@marketally/nopwd-vue3-library'
 
 createApp(App)
   .use(plugin)
   .mount('#app')
 
-<NoPWD includephon3 />
+<Login includephon3 />
 
 ## 💖 Contributing
 We welcome contributions! Please see our contributing guide for details on how to get involved.
@@ -45,4 +43,4 @@ NoPWD is licensed under the MIT License.
 If you need help or have any questions, please open an issue on our GitHub page.
 
 ## 🎉 About Us
-NoPWD is maintained by [MarketAlly]. We are a team of passionate developers dedicated to creating useful, high-quality software.
+NoPWD is maintained by [@MarketAlly](https://github.com/MarketAlly). We are a team of passionate developers dedicated to creating useful, high-quality software.
