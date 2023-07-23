@@ -1,12 +1,11 @@
 import type { App } from 'vue';
-import { HelloWorld, MyButton, Login } from "@/components";
+import { Login, Preloader } from "@/components";
 
 export default {
   install: (app: App) => {
-    app.component('HelloWorld', HelloWorld);
-    app.component('MyButton', MyButton);
     app.component('Login', Login);
+    app.component('Preloader', Preloader);
   }
 };
 
-export { HelloWorld, MyButton };
+export { Login, Preloader };

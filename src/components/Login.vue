@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { onBeforeMount, ref } from 'vue';
+import { useAuthStore } from '@/store'
+import { createPinia, setActivePinia, storeToRefs } from 'pinia'
+import QRCodeVue3 from 'qrcode-vue3'
+import Preloader from './Preloader.vue'
+
+onBeforeMount(() => {
+    setActivePinia(createPinia())
+})
+
+const props = defineProps({
+    isMobileScreen: {
+        type: Boolean,
+        default: false
+    },
+    SignupURL: {
+        type: String,
+        default: 'No description provided',
+    },
+})
+
+const store = useAuthStore()
+const Auth = storeToRefs(store)
+const showQRCode = ref(false)
+const QRCode = ref('')
+const DarkIt = ref(false)
+</script>
+
 <template>
     <div>
         <div>
@@ -85,7 +114,7 @@
                     </VButton> -->
                 </div>
                 <div v-else-if="!store.success" style="text-align: center">
-                    <!-- <VPlaceload width="300px" height="300px"  /> -->
+                    <Preloader width="300px" :disabled="false" :dark="true" height="300px"  />
                 </div>
                 {{ store.Message }}
             </div>
@@ -106,30 +135,6 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useAuthStore } from '@/store'
-import { storeToRefs } from 'pinia'
-import QRCodeVue3 from 'qrcode-vue3'
-
-const props = defineProps({
-    isMobileScreen: {
-        type: Boolean,
-        default: false
-    },
-    SignupURL: {
-        type: String,
-        default: 'No description provided',
-    },
-})
-
-const store = useAuthStore()
-const Auth = storeToRefs(store)
-const showQRCode = ref(false)
-const QRCode = ref('')
-const DarkIt = ref(false)
-</script>
 
 <style>
 

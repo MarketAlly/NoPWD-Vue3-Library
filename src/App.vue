@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import MyButton from './components/MyButton.vue'
+import Login from './components/Login.vue'
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+    <a href="https://www.nopwd.com" target="_blank">
+      <img src="/assets/NOPWD.png" class="logo" alt="NoPWD logo" />
     </a>
   </div>
-  <HelloWorld msg="Vite + Vue" />
-  <MyButton>Dave</MyButton>
+  <Login :is-mobile-screen="false" />
 </template>
 
 <style scoped>
@@ -23,9 +18,9 @@ import MyButton from './components/MyButton.vue'
   will-change: filter;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #7e7f9eaa);
 }
 .logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+  filter: drop-shadow(0 0 2em #648a79aa);
 }
 </style>
