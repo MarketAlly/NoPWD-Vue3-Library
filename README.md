@@ -6,8 +6,8 @@ NoPWD is a powerful, easy-to-use library for incorporating NoPWD based login fun
 
 ## 🚀 Features
 
-- Generate QR codes for login
-- Scan QR codes and return auth tokens
+- Generate QR codes for login to to the [NoPWD System](www.nopwd.com platform)
+- Scan QR codes and return access
 - Secure, encrypted data transmission
 - Compatible with Vue3 environments
 
@@ -15,13 +15,15 @@ NoPWD is a powerful, easy-to-use library for incorporating NoPWD based login fun
 
 Install NoPWD with npm:
 
-``bash
+```bash
 npm install @marketally/nopwd-vue3-library
+```
 
 ## 🎈 Usage
 
 Here's a basic example of how to use
 
+```javascript
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -31,10 +33,11 @@ createApp(App)
   .use(plugin)
   .mount('#app')
 
-<Login includephon3 />
+<template>
+  <Login /> <!-- This will render the login component -->
+</template>
 
-## 💖 Contributing
-We welcome contributions! Please see our contributing guide for details on how to get involved.
+```
 
 ## 📃 License
 NoPWD is licensed under the MIT License.
