@@ -29,10 +29,10 @@ export default defineConfig({
     cssCodeSplit: true,
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: "src/components/nopwd_library.ts",
-      name: 'nopwd_library',
+      entry: "src/components/nopwd-vue3-library.ts",
+      name: 'nopwd-vue3-library',
       formats: ["es", "cjs", "umd"],
-      fileName: format => `nopwd_library.${format}.js`
+      fileName: format => `nopwd-vue3-library.${format}.js`
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -43,7 +43,7 @@ export default defineConfig({
       external: ['vue'],
       output: {
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'main.css') return 'nopwd_library.css';
+          if (assetInfo.name === 'main.css') return 'nopwd-vue3-library.css';
           return assetInfo.name;
         },
         exports: "named",
