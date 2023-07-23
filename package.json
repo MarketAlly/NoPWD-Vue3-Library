@@ -1,10 +1,10 @@
 {
   "name": "@marketally/nopwd-vue3-library",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "author": "MarketAlly",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Provides a login module for the nopwd system and support libraries",
   "files": [
     "dist"
