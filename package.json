@@ -1,0 +1,48 @@
+{
+  "name": "NoPWD Library",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "author": "MarketAlly",
+  "license": "ISC",
+  "description": "Provides a login module for the nopwd system and support libraries",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/nopwd_library.umd.js",
+  "module": "./dist/nopwd_library.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/nopwd_library.es.js",
+      "require": "./dist/nopwd_library.umd.js"
+    },
+    "./dist/nopwd_library.css": {
+      "import": "./dist/nopwd_library.css",
+      "require": "./dist/nopwd_library.css"
+    }
+  },
+  "types": "./dist/main.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.45",
+    "@vueuse/core": "^10.2.1",
+    "axios": "^1.4.0",
+    "guid-typescript": "^1.0.9",
+    "pinia": "^2.1.4",
+    "qrcode-vue3": "^1.6.8"
+  },
+  "devDependencies": {
+    "@types/argparse": "^2.0.10",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "path": "^0.12.7",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0",
+    "vite-plugin-dts": "^1.7.1",
+    "vue-tsc": "^1.0.11"
+  }
+}
