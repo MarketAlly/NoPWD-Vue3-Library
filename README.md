@@ -34,7 +34,7 @@ createApp(App)
   .mount('#app')
 
 <template>
-  <Login /> <!-- This will render the login component -->
+  <Login />
 </template>
 
 ```
