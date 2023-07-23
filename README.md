@@ -1,4 +1,6 @@
-# NoPWD - Easy NoPWD Authentication for Vue3
+# NoPWD Vue3 Library 
+
+Easy NoPWD Authentication Library for Vue3
 
 ![nopwd-login-library](assets/NOPWD.png)
 
