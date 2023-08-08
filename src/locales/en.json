@@ -1,0 +1,9 @@
+{
+  "auth.appinstalled" : "App installed locally? Click here",
+  "auth.codedark" : "Code not reading? Flip to light-mode.",
+  "auth.codelight" : "Scan the code with your mobile device.",
+  "auth.codeerror" : "Error requesting code, <br/>please refresh page.",
+  "auth.loading" : "Loading access code, please wait...",
+  "auth.prepare" : "Preparing interface...",
+  "auth.login" : "Click to Login"
+}

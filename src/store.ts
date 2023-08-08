@@ -1,6 +1,8 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router';
 import { INoPWD, type IValue, type apiResponse, type apiResponses } from './interface'
 import { Guid } from 'guid-typescript'
 import serviceCall from './interface'
@@ -8,12 +10,46 @@ import serviceCall from './interface'
 export const useAuthStore = defineStore(
     'useAuthStore',
     () => {
+
+      const requestUrl = ref('api/requestloginkey')
+      const verifyUrl = ref('api/verifyaccess')
+      const confirmUrl = ref('api/confirmaccess')
+      const logoutUrl = ref('api/logout')
+      
+      const devUrl = ref('http://localhost:3000/')
+      const prodUrl = ref('https://www.nopwd.com')
+
+      const appUrl = ref('/app')
+      const loginUrl = ref('/auth/login')
+
+      const router = useRouter();
+
+      function setBase(dev: string, prod: string) {
+        devUrl.value = dev
+        prodUrl.value = prod
+      }
+
+      function setRoutes(app: string, login: string) {
+        appUrl.value = app
+        loginUrl.value = login
+      }
+
+      function setUrls(request: string, verify: string, confirm: string, logout: string) {
+        requestUrl.value = request
+        verifyUrl.value = verify
+        confirmUrl.value = confirm
+        logoutUrl.value = logout
+      }
+
       const success = ref(false)
+      const is_error = ref(false)
       const code = ref(0)
-      const IDLogin = useStorage('idlogin', Guid.EMPTY)
-      const auth = useStorage('auth', 0)
-      const userSession = useStorage('userSession', '')
+      const IDLogin = useStorage('nopwd_login', Guid.EMPTY)
+      const auth = useStorage('nopwd_auth', 0)
+      const userSession = useStorage('nopwd_session', '')
   
+      const { t } = useI18n()
+
       function config() {
         return {
           headers: {
@@ -23,67 +59,50 @@ export const useAuthStore = defineStore(
           }
         }
       };
-  
-      function configForm() {
-        return {
-          headers: {
-            Accept: 'application/json',
-            'X-LoginId': IDLogin.value,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      };
 
       const IsDark = ref(false)
-      const UserId = ref('')
       const QRCode = ref('')
-      const LocalCode = ref('')
-      const userName = ref('')
-      const Message = ref('Preparing interface...')
+      const Message = ref(t('auth.prepare'))
       const rqValue = ref<IValue>({ id: IDLogin.value, code: null, value: null, subid: null, userid: null, count: null, page: null, fromdate: null })
   
-      async function loginQRCode(isMobileScreen : Boolean) : Promise<number | undefined> {
+      async function loginQRCode() : Promise<number | undefined> {
         IDLogin.value = Guid.EMPTY
         if (IDLogin.value === Guid.EMPTY.toString()) {
-          Message.value = 'Loading access code, please wait...'
+          Message.value = t('auth.loading')
           IDLogin.value = Guid.create().toString()
           rqValue.value.id = IDLogin.value
-          serviceCall.setBaseURL(undefined, undefined)
-          return serviceCall.apiClient.get<apiResponse>('api/requestloginkey', config()).then((response) => {
+          serviceCall.setBaseURL(devUrl.value, prodUrl.value)
+          return serviceCall.apiClient.get<apiResponse>(requestUrl.value, config()).then((response) => {
             const res: apiResponse = response.data
             if (res.success) {
               Message.value = ''
-              if (isMobileScreen) {
-                QRCode.value = "https://www.marketally.com?loginid=" + IDLogin.value
-                LocalCode.value = "polylogin:" + IDLogin.value
-              } else {
-                QRCode.value = "polylogin:" + IDLogin.value
-              }
+              QRCode.value = "https://www.nopwd.com?loginid=" + IDLogin.value
               
               success.value = res.success
               code.value = res.code
               auth.value = 1
               setTimeout(checkQRLogin, 1000)
               if (IsDark) {
-                Message.value = 'Code not reading? Click moon icon above.'
+                Message.value = t('auth.codedark')
               } else {
-                Message.value = 'Scan the code with your mobile device.'
+                Message.value = t('auth.codelight')
               }
               return 1
             } else {
-              Message.value = 'Error requesting code, please refresh page'
+              Message.value = t('auth.codeerror')
               return -1
             }
           }).catch(error => {
             console.log(error)
-            Message.value = 'Error requesting code, please refresh page'
+            is_error.value = true
+            Message.value = t('auth.codeerror')
             return -1
           })
         } else {
           if (IsDark) {
-            Message.value = 'Code not reading? Click moon icon above.'
+            Message.value = t('auth.codedark')
           } else {
-            Message.value = 'Scan the code with your mobile device.'
+            Message.value = t('auth.codelight')
           }
           checkQRLogin()
           return 0
@@ -91,9 +110,9 @@ export const useAuthStore = defineStore(
       }
   
       async function checkQRLogin() : Promise<number | undefined> {
-        serviceCall.setBaseURL(undefined, undefined)
+        serviceCall.setBaseURL(devUrl.value, prodUrl.value)
         return await serviceCall.apiClient
-          .get('api/verifyaccess', config())
+          .get(verifyUrl.value, config())
           .then((response) => {
             const res: apiResponses<INoPWD> = response.data
             
@@ -104,8 +123,8 @@ export const useAuthStore = defineStore(
                 auth.value = 2
                 userSession.value = JSON.stringify(res.data)
                 setTimeout(checkAccess, 20000)
-                
-                //aRouter.push('/app')
+                if (appUrl.value !== undefined || appUrl.value !== null || appUrl.value !== '')
+                  router.push(appUrl.value);
                 return 1
               } else if (res.code < 0) {
                 auth.value = 0
@@ -114,16 +133,17 @@ export const useAuthStore = defineStore(
               } else {
                 setTimeout(checkQRLogin, 1000)
                 if (IsDark) {
-                  Message.value = 'Code not reading? Click moon icon above.'
+                  Message.value = t('auth.codedark')
                 } else {
-                  Message.value = 'Scan the code with your mobile device.'
+                  Message.value = t('auth.codelight')
                 }
                 return 0
               }
             }
           }).catch(error => {
             console.log(error)
-            Message.value = 'Error checking access, refresh page'
+            is_error.value = true
+            Message.value = t('auth.codeerror')
             return -1
           })
       }
@@ -133,9 +153,9 @@ export const useAuthStore = defineStore(
           logout()
           return
         }
-        serviceCall.setBaseURL(undefined, undefined)
+        serviceCall.setBaseURL(devUrl.value, prodUrl.value)
         await serviceCall.apiClient
-          .get('api/confirmaccess', config())
+          .get(confirmUrl.value, config())
           .then((response) => {
             const res: apiResponse = response.data
             
@@ -147,12 +167,14 @@ export const useAuthStore = defineStore(
               } else {
                 auth.value = 0
                 userSession.value = ''
-                //aRouter.push('/auth/login')
+                if (loginUrl.value !== undefined || loginUrl.value !== null || loginUrl.value !== '')
+                  router.push(loginUrl.value);
               }
             }
         }).catch(error => {
           console.log(error)
-          Message.value = 'Error checking access, refresh page'
+          is_error.value = true
+          Message.value = t('auth.codeerror')
         })
       }
   
@@ -162,9 +184,9 @@ export const useAuthStore = defineStore(
   
       async function logout() {
         auth.value = 0
-        serviceCall.setBaseURL(undefined, undefined)
+        serviceCall.setBaseURL(devUrl.value, prodUrl.value)
         await serviceCall.apiClient
-          .get('api/logout', config())
+          .get(logoutUrl.value, config())
           .then((response) => {
             const res: apiResponse = response.data
             success.value = res.success
@@ -174,26 +196,28 @@ export const useAuthStore = defineStore(
               auth.value = 0
               IDLogin.value = Guid.EMPTY.toString()
             }
+            if (loginUrl.value !== undefined || loginUrl.value !== null || loginUrl.value !== '')
+              router.push(loginUrl.value);
           })
       }
   
       return {
         auth,
-        UserId,
         success,
         code,
         IDLogin,
-        userName,
         QRCode,
-        LocalCode,
         Message,
+        is_error,
         loginQRCode,
         checkAccess,
         checkQRLogin,
         logout,
         config,
-        configForm,
-        IsLoggedIn
+        IsLoggedIn,
+        setUrls,
+        setRoutes,
+        setBase
       }
     }
   )

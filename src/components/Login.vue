@@ -1,12 +1,37 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch, watchEffect } from 'vue';
 import { useAuthStore } from '@/store'
+import { useI18n } from 'vue-i18n'
 import { createPinia, setActivePinia, storeToRefs } from 'pinia'
 import QRCodeVue3 from 'qrcode-vue3'
 import Preloader from './Preloader.vue'
+import { tryOnMounted, useStorage } from '@vueuse/core';
+
+const { locale, t } = useI18n()
+const store = useAuthStore()
+const Auth = storeToRefs(store)
+const showQRCode = ref(false)
+const defaultLocale = useStorage('locale', 'en')
+const QRCode = ref('')
 
 onBeforeMount(() => {
     setActivePinia(createPinia())
+})
+
+tryOnMounted(() => {
+  if (!store.IsLoggedIn) {
+    store.loginQRCode()
+  } else {
+    store.checkQRLogin()
+  }
+  watchEffect(() => {
+    if (Auth.success.value === true) {
+      QRCode.value = Auth.QRCode.value
+      showQRCode.value = true
+    } else {
+      showQRCode.value = false
+    }
+  })
 })
 
 const props = defineProps({
@@ -14,150 +39,165 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    SignupURL: {
+    showButton: {
+        type: Boolean,
+        default: false
+    },
+    primaryDark: {
         type: String,
-        default: 'No description provided',
+        default: '#c48a56',
+    },
+    primaryLight: {
+        type: String,
+        default: '#606C38',
+    },
+    secondaryDark: {
+        type: String,
+        default: '#18181b',
+    },
+    secondaryLight: {
+        type: String,
+        default: '#ffffff',
+    },
+    isDark: {
+        type: Boolean,
+        default: false,
+    },
+    positionLight: {
+        type: String,
+        default: '#000000',
+    },
+    positionDark: {
+        type: String,
+        default: '#ffffff',
+    },
+    accentColor: {
+        type: String,
+        default: '#ffffff',
+    },
+    logoDark: {
+        type: String,
+        default: '',
+    },
+    logoLight: {
+        type: String,
+        default: '',
     },
 })
 
-const store = useAuthStore()
-const Auth = storeToRefs(store)
-const showQRCode = ref(false)
-const QRCode = ref('')
-const DarkIt = ref(false)
+function clickHandler() {
+    if (QRCode.value == undefined || QRCode.value == null || QRCode.value == '') {
+        return
+    }
+    window.open(QRCode.value,'new_window');
+}
+
+watch(locale, () => {
+  defaultLocale.value = locale.value
+})
+
 </script>
 
 <template>
     <div>
         <div>
             <div style="text-align: center">
-                <div v-if="store.success && !isMobileScreen" style="text-align: center">
+                <div @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="store.success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
                     <QRCodeVue3
-                        v-if="DarkIt"
+                        v-if="props.isDark"
                         :key="QRCode"
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        image="/images/logoWhiteSmall.png"
+                        :image="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''"
                         :qr-options="{
-                        typeNumber: 0,
-                        mode: 'Byte',
-                        errorCorrectionLevel: 'H',
+                            typeNumber: 0,
+                            mode: 'Byte',
+                            errorCorrectionLevel: 'H',
                         }"
                         :image-options="{
-                        hideBackgroundDots: true,
-                        imageSize: 0.3,
-                        margin: 10,
+                            hideBackgroundDots: true,
+                            imageSize: 0.3,
+                            margin: 10,
                         }"
                         :dots-options="{
-                        type: 'dots',
-                        color: '#c48a56',
-                        gradient: {
-                            type: 'linear',
-                            rotation: 0,
-                            colorStops: [
-                            { offset: 0, color: '#c48a56' },
-                            { offset: 1, color: '#c48a56' },
-                            ],
-                        },
+                            type: 'dots',
+                            color: props.primaryDark,
+                            gradient: {
+                                type: 'linear',
+                                rotation: 0,
+                                colorStops: [
+                                { offset: 0, color: props.primaryDark },
+                                { offset: 1, color: props.primaryDark },
+                                ],
+                            },
                         }"
-                        :background-options="{ color: '#18181b' }"
-                        :corners-square-options="{ type: 'dot', color: '#ffffff' }"
-                        :corners-dot-options="{ type: undefined, color: '#ffffff' }"
+                        :background-options="{ color: props.secondaryDark }"
+                        :corners-square-options="{ type: 'dot', color: props.positionDark }"
+                        :corners-dot-options="{ type: undefined, color: props.positionDark }"
                         :download="false"
                     />
                     <QRCodeVue3
-                    v-if="!DarkIt"
-                    :key="QRCode"
-                    :width="300"
-                    :height="300"
-                    :value="QRCode"
-                    image="/images/logoBlackSmall.png"
-                    :qr-options="{
-                        typeNumber: 0,
-                        mode: 'Byte',
-                        errorCorrectionLevel: 'H',
-                    }"
-                    :image-options="{
-                        hideBackgroundDots: true,
-                        imageSize: 0.3,
-                        margin: 10,
-                    }"
-                    :dots-options="{
-                        type: 'dots',
-                        color: '#606C38',
-                        gradient: {
-                        type: 'linear',
-                        rotation: 0,
-                        colorStops: [
-                            { offset: 0, color: '#606C38' },
-                            { offset: 1, color: '#606C38' },
-                        ],
-                        },
-                    }"
-                    :background-options="{ color: '#ffffff' }"
-                    :corners-square-options="{ type: 'dot', color: '#000000' }"
-                    :corners-dot-options="{ type: undefined, color: '#000000' }"
-                    :download="false"
+                        v-if="!props.isDark"
+                        :key="QRCode"
+                        :width="300"
+                        :height="300"
+                        :value="QRCode"
+                        :image="logoDark.length == 0 ? '/assets/nopwd_white.png' : ''"
+                        :qr-options="{
+                            typeNumber: 0,
+                            mode: 'Byte',
+                            errorCorrectionLevel: 'H',
+                        }"
+                        :image-options="{
+                            hideBackgroundDots: true,
+                            imageSize: 0.3,
+                            margin: 10,
+                        }"
+                        :dots-options="{
+                            type: 'dots',
+                            color: props.primaryLight,
+                            gradient: {
+                            type: 'linear',
+                            rotation: 0,
+                            colorStops: [
+                                { offset: 0, color: props.primaryLight },
+                                { offset: 1, color: props.primaryLight },
+                            ],
+                            },
+                        }"
+                        :background-options="{ color: props.secondaryLight }"
+                        :corners-square-options="{ type: 'dot', color: props.positionLight }"
+                        :corners-dot-options="{ type: undefined, color: props.positionLight }"
+                        :download="false"
                     />
                 </div>
-                <div v-else-if="store.success && isMobileScreen" style="text-align: center">
-                    <!-- <button v-if="showQRCode" 
-                    style="width: 300px; height: 300px;"
-                    :href="QRCode"
-                    color="primary"
-                    role="menuitem"
-                    raised
-                    >
-                        <img width="150" src="/images/logoWhiteSmall.png" />
-                        <br/><br/><span>Click to Login</span>
-                    </VButton> -->
+                <div v-else-if="store.success && props.isMobileScreen" style="text-align: center">
+                    <button v-if="showQRCode" 
+                        style="width: 300px; height: 300px;"
+                        :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
+                        :href="QRCode"
+                        >
+                        <img width="150" :src="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''" />
+                        <br/><br/><span>{{ t('auth.login') }}</span>
+                    </button>
                 </div>
                 <div v-else-if="!store.success" style="text-align: center">
-                    <Preloader width="300px" :disabled="false" :dark="true" height="300px"  />
+                    <Preloader v-if="!store.is_error" width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
                 </div>
-                {{ store.Message }}
+                <div v-html="store.Message" style="text-align: center"></div>
             </div>
         </div>
-        <div v-if="store.success && !isMobileScreen" style="text-align: center">
+        <div v-if="store.success && !props.isMobileScreen && props.showButton" style="text-align: center">
             <br/>   
-            <button class="button-2" role="button">Button 2</button> 
-            <!-- <Button v-if="showQRCode" 
-                style="width: 300px; height: 120px;"
+            <button v-if="showQRCode" 
+                style="width: 300px; height: 120px;" 
+                :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
                 :href="QRCode"
-                color="primary"
-                role="menuitem"
-                raised
                 >
-                    <img width="80" src="/images/logoWhiteSmall.png" />
-                    <br/><br/><span>App installed locally? Click here</span>
-                </Button> -->
+                <img width="80" :src="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''" />
+                <br/><span>{{ t('auth.appinstalled') }}</span>
+            </button>
         </div>
     </div>
 </template>
-
-<style>
-
-.button-2 {
-  background-color: rgba(51, 51, 51, 0.05);
-  border-radius: 8px;
-  border-width: 0;
-  color: #333333;
-  cursor: pointer;
-  display: inline-block;
-  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  list-style: none;
-  margin: 0;
-  padding: 10px 12px;
-  text-align: center;
-  transition: all 200ms;
-  vertical-align: baseline;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-</style>
