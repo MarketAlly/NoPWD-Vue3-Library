@@ -85,7 +85,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     };
 }, {
     t: (key: string) => string;
-    IsLoggedIn: () => boolean;
+    auth: import("vue").Ref<number>;
     loginQRCode: () => Promise<number | undefined>;
     checkQRLogin: () => Promise<number | undefined>;
     success: import("vue").Ref<boolean>;
