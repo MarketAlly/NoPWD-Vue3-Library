@@ -48,7 +48,6 @@ export interface INoPWDStore {
       'Content-Type': string;
     };
   };
-  IsLoggedIn: () => boolean;
   setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
   setRoutes: (app: string, login: string) => void;
   setBase: (dev: string, prod: string) => void;

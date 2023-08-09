@@ -8,53 +8,54 @@ import { INoPWD, type IValue, type apiResponse, type apiResponses, type INoPWDSt
 
 export default function useNoPWD(): INoPWDStore {
 
-    const requestUrl = useStorage('nopwd_request','api/requestloginkey');
-    const verifyUrl = useStorage('nopwd_verify','api/verifyaccess');
-    const confirmUrl = useStorage('nopwd_confirm','api/confirmaccess');
-    const logoutUrl = useStorage('nopwd_logout','api/logout');
+    const requestUrl = useStorage('nopwd_request','api/requestloginkey', sessionStorage);
+    const verifyUrl = useStorage('nopwd_verify','api/verifyaccess', sessionStorage);
+    const confirmUrl = useStorage('nopwd_confirm','api/confirmaccess', sessionStorage);
+    const logoutUrl = useStorage('nopwd_logout','api/logout', sessionStorage);
 
-    const devUrl = useStorage('nopwd_dev','http://localhost:3000/');
-    const prodUrl = useStorage('nopwd_prod','https://www.nopwd.com');
+    const devUrl = useStorage('nopwd_dev','http://localhost:3000/', sessionStorage);
+    const prodUrl = useStorage('nopwd_prod','https://www.nopwd.com/', sessionStorage);
 
-    const appUrl = useStorage('nopwd_app','/app');
-    const loginUrl = useStorage('nopwd_login','/auth/login');
+    const appUrl = useStorage('nopwd_app','/app', sessionStorage);
+    const loginUrl = useStorage('nopwd_login','/auth/login', sessionStorage);
+    const logConsole = useStorage('nopwd_log', false, sessionStorage);
 
     const router = useRouter();
 
     function setBase(dev: string, prod: string) {
-      if (dev != undefined || dev != null || dev != '')
+      if (dev != undefined && dev != null && dev != '')
         devUrl.value = dev;
-      if (prod != undefined || prod != null || prod != '')
+      if (prod != undefined && prod != null && prod != '')
         prodUrl.value = prod;
     }
 
     function setRoutes(app: string, login: string) {
-      if (app != undefined || app != null || app != '')
+      if (app != undefined && app != null && app != '')
         appUrl.value = app;
-      if (login != undefined || login != null || login != '')
+      if (login != undefined && login != null && login != '')
         loginUrl.value = login;
 
     }
 
     function setUrls(request: string, verify: string, confirm: string, logout: string) {
-      if (request != undefined || request != null || request != '')
+      if (request != undefined && request != null && request != '')
         requestUrl.value = request;
-      if (verify != undefined || verify != null || verify != '')
+      if (verify != undefined && verify != null && verify != '')
         verifyUrl.value = verify;
-      if (confirm != undefined || confirm != null || confirm != '')
+      if (confirm != undefined && confirm != null && confirm != '')
         confirmUrl.value = confirm;
-      if (logout != undefined || logout != null || logout != '')
+      if (logout != undefined && logout != null && logout != '')
         logoutUrl.value = logout;
     }
 
     const success = ref(false);
     const is_error = ref(false);
     const code = ref(0);
-    const IDSite = useStorage('nopwd_siteid', Guid.EMPTY);
-    const IDSiteCall = useStorage('nopwd_sitecallid', Guid.EMPTY);
-    const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY);
-    const auth = useStorage('nopwd_auth', 0);
-    const userSession = useStorage('nopwd_session', '');
+    const IDSite = useStorage('nopwd_siteid', Guid.EMPTY, sessionStorage);
+    const IDSiteCall = useStorage('nopwd_sitecallid', Guid.EMPTY, sessionStorage);
+    const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY, sessionStorage);
+    const auth = useStorage('nopwd_auth', 0, sessionStorage);
+    const userSession = useStorage('nopwd_session', '', sessionStorage);
 
     const { t } = useTranslations();
 
@@ -80,8 +81,11 @@ export default function useNoPWD(): INoPWDStore {
         Message.value = t('auth.loading');
         IDLogin.value = Guid.create().toString();
         rqValue.value.id = IDLogin.value;
+        if (logConsole.value)
+          console.log('Login: ' + IDLogin.value);
         serviceCall.setBaseURL(devUrl.value, prodUrl.value);
-        return serviceCall.apiClient.get<apiResponse>(requestUrl.value, config()).then((response) => {
+        let aURL = serviceCall.getBaseURL() + requestUrl.value
+        return await serviceCall.apiClient.get<apiResponse>(aURL, config()).then((response) => {
           const res: apiResponse = response.data;
           if (res.success) {
             Message.value = '';
@@ -120,11 +124,13 @@ export default function useNoPWD(): INoPWDStore {
 
     async function checkQRLogin(): Promise<number | undefined> {
       serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      let aURL = serviceCall.getBaseURL() + verifyUrl.value
+      if (logConsole.value)
+          console.log('Check: ' + IDLogin.value);
       return await serviceCall.apiClient
-        .get(verifyUrl.value, config())
-        .then((response) => {
+        .get(aURL, config())
+        .then(async (response) => {
           const res: apiResponses<INoPWD> = response.data;
-
           if (res.success) {
             success.value = res.success;
             code.value = res.code;
@@ -149,9 +155,12 @@ export default function useNoPWD(): INoPWDStore {
               }
               return 0;
             }
+          } else {
+            await loginQRCode()
           }
         }).catch(error => {
-          console.log(error);
+          if (logConsole.value)
+            console.log(error);
           is_error.value = true;
           Message.value = t('auth.codeerror');
           return -1;
@@ -164,8 +173,11 @@ export default function useNoPWD(): INoPWDStore {
         return;
       }
       serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      if (logConsole.value)
+          console.log('Check: ' + IDLogin.value);
+      let aURL = serviceCall.getBaseURL() + confirmUrl.value
       await serviceCall.apiClient
-        .get(confirmUrl.value, config())
+        .get(aURL, config())
         .then((response) => {
           const res: apiResponse = response.data;
 
@@ -182,21 +194,21 @@ export default function useNoPWD(): INoPWDStore {
             }
           }
         }).catch(error => {
-          console.log(error);
+          if (logConsole.value)
+            console.log(error);
           is_error.value = true;
           Message.value = t('auth.codeerror');
         });
     }
 
-    function IsLoggedIn() {
-      return auth.value > 1;
-    }
-
     async function logout() {
       auth.value = 0;
       serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      if (logConsole.value)
+          console.log('Logout: ' + IDLogin.value);
+      let aURL = serviceCall.getBaseURL() + logoutUrl.value
       await serviceCall.apiClient
-        .get(logoutUrl.value, config())
+        .get(aURL, config())
         .then((response) => {
           const res: apiResponse = response.data;
           success.value = res.success;
@@ -226,7 +238,6 @@ export default function useNoPWD(): INoPWDStore {
       checkQRLogin,
       logout,
       config,
-      IsLoggedIn,
       setUrls,
       setRoutes,
       setBase

@@ -7,7 +7,7 @@ import Preloader from './Preloader.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
 const { t } = useTranslations();
-const { IsLoggedIn, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes, IDSite } = useNoPWD();
+const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes, IDSite } = useNoPWD();
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
@@ -16,7 +16,7 @@ tryOnMounted(() => {
     setBase(props.configDev, props.configProduction)
     setRoutes(props.configApp, props.configLogin)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
-    if (!IsLoggedIn) {
+    if (auth.value < 2) {
         loginQRCode()
     } else {
         checkQRLogin()

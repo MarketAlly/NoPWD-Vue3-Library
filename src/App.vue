@@ -8,7 +8,7 @@ import Login from './components/Login.vue'
       <img src="/assets/NOPWD.png" class="logo" alt="NoPWD logo" />
     </a>
   </div>
-  <Login :isMobileScreen="false" :showButton="true" :isDark="true" secondary-dark="#242424" primary-dark="#ff0000" />
+  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :showButton="true" :isDark="true" secondary-dark="#242424" primary-dark="#ff0000" />
 </template>
 
 <style scoped>
