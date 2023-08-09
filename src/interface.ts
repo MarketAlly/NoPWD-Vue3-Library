@@ -32,6 +32,7 @@ export interface INoPWDStore {
   code: Ref<number>;
   IDLogin: Ref<string>;
   IDSite: Ref<string>;
+  IDSiteCall: Ref<string>;
   QRCode: Ref<string>;
   Message: Ref<string>;
   is_error: Ref<boolean>;
@@ -43,7 +44,7 @@ export interface INoPWDStore {
     headers: {
       Accept: string;
       'X-LoginId': string;
-      'X-SiteId': string;
+      'X-SiteCallId': string;
       'Content-Type': string;
     };
   };
@@ -75,9 +76,11 @@ export interface IStatus {
 
   export interface INoPWD {
       id: string;
-      fullname: string;
+      name: string;
       email: string;
-      profilepict: string;
+      avatar: string;
+      sitecallid: string;
+      isonline: boolean;
     }
   
   export interface IResponse {

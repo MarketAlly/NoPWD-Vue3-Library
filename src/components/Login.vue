@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import useNoPWD from '@/store'
 import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
@@ -7,24 +7,27 @@ import Preloader from './Preloader.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
 const { t } = useTranslations();
-const { IsLoggedIn, loginQRCode, checkQRLogin, success, QRCode, is_error, Message } = useNoPWD();
+const { IsLoggedIn, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes, IDSite } = useNoPWD();
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
-const WorkingQRCode = ref('')
 
 tryOnMounted(() => {
-  if (!IsLoggedIn) {
-    loginQRCode()
-  } else {
-    checkQRLogin()
-  }
-  watchEffect(() => {
-    if (success.value === true) {
-      showQRCode.value = true
+    IDSite.value = props.SiteId
+    setBase(props.configDev, props.configProduction)
+    setRoutes(props.configApp, props.configLogin)
+    setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
+    if (!IsLoggedIn) {
+        loginQRCode()
     } else {
-      showQRCode.value = false
+        checkQRLogin()
     }
-  })
+    watchEffect(() => {
+        if (success.value === true) {
+            showQRCode.value = true
+        } else {
+            showQRCode.value = false
+        }
+    })
 })
 
 const props = defineProps({
@@ -73,6 +76,42 @@ const props = defineProps({
         default: '',
     },
     logoLight: {
+        type: String,
+        default: '',
+    },
+    configDev: {
+        type: String,
+        default: '',
+    },
+    configProduction: {
+        type: String,
+        default: '',
+    },
+    configApp: {
+        type: String,
+        default: '',
+    },
+    configLogin: {
+        type: String,
+        default: '',
+    },
+    configRequest: {
+        type: String,
+        default: '',
+    },
+    configVerify: {
+        type: String,
+        default: '',
+    },
+    configConfirm: {
+        type: String,
+        default: '',
+    },
+    configLogout: {
+        type: String,
+        default: '',
+    },
+    SiteId: {
         type: String,
         default: '',
     },

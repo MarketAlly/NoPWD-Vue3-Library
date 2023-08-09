@@ -47,6 +47,42 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    configDev: {
+        type: StringConstructor;
+        default: string;
+    };
+    configProduction: {
+        type: StringConstructor;
+        default: string;
+    };
+    configApp: {
+        type: StringConstructor;
+        default: string;
+    };
+    configLogin: {
+        type: StringConstructor;
+        default: string;
+    };
+    configRequest: {
+        type: StringConstructor;
+        default: string;
+    };
+    configVerify: {
+        type: StringConstructor;
+        default: string;
+    };
+    configConfirm: {
+        type: StringConstructor;
+        default: string;
+    };
+    configLogout: {
+        type: StringConstructor;
+        default: string;
+    };
+    SiteId: {
+        type: StringConstructor;
+        default: string;
+    };
 }, {
     t: (key: string) => string;
     IsLoggedIn: () => boolean;
@@ -56,9 +92,12 @@ declare const _sfc_main: import("vue").DefineComponent<{
     QRCode: import("vue").Ref<string>;
     is_error: import("vue").Ref<boolean>;
     Message: import("vue").Ref<string>;
+    setBase: (dev: string, prod: string) => void;
+    setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
+    setRoutes: (app: string, login: string) => void;
+    IDSite: import("vue").Ref<string>;
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
-    WorkingQRCode: import("vue").Ref<string>;
     props: any;
     clickHandler: () => void;
     readonly QRCodeVue3: any;
@@ -149,6 +188,42 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    configDev: {
+        type: StringConstructor;
+        default: string;
+    };
+    configProduction: {
+        type: StringConstructor;
+        default: string;
+    };
+    configApp: {
+        type: StringConstructor;
+        default: string;
+    };
+    configLogin: {
+        type: StringConstructor;
+        default: string;
+    };
+    configRequest: {
+        type: StringConstructor;
+        default: string;
+    };
+    configVerify: {
+        type: StringConstructor;
+        default: string;
+    };
+    configConfirm: {
+        type: StringConstructor;
+        default: string;
+    };
+    configLogout: {
+        type: StringConstructor;
+        default: string;
+    };
+    SiteId: {
+        type: StringConstructor;
+        default: string;
+    };
 }>>, {
     isMobileScreen: boolean;
     showButton: boolean;
@@ -162,5 +237,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
     accentColor: string;
     logoDark: string;
     logoLight: string;
+    configDev: string;
+    configProduction: string;
+    configApp: string;
+    configLogin: string;
+    configRequest: string;
+    configVerify: string;
+    configConfirm: string;
+    configLogout: string;
+    SiteId: string;
 }, {}>;
 export default _sfc_main;

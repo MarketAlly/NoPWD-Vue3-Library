@@ -8,18 +8,18 @@ import { INoPWD, type IValue, type apiResponse, type apiResponses, type INoPWDSt
 
 export default function useNoPWD(): INoPWDStore {
 
-  const requestUrl = ref('api/requestloginkey');
-  const verifyUrl = ref('api/verifyaccess');
-  const confirmUrl = ref('api/confirmaccess');
-  const logoutUrl = ref('api/logout');
+    const requestUrl = useStorage('nopwd_request','api/requestloginkey');
+    const verifyUrl = useStorage('nopwd_verify','api/verifyaccess');
+    const confirmUrl = useStorage('nopwd_confirm','api/confirmaccess');
+    const logoutUrl = useStorage('nopwd_logout','api/logout');
 
-  const devUrl = ref('http://localhost:3000/');
-  const prodUrl = ref('https://www.nopwd.com');
+    const devUrl = useStorage('nopwd_dev','http://localhost:3000/');
+    const prodUrl = useStorage('nopwd_prod','https://www.nopwd.com');
 
-  const appUrl = ref('/app');
-  const loginUrl = ref('/auth/login');
+    const appUrl = useStorage('nopwd_app','/app');
+    const loginUrl = useStorage('nopwd_login','/auth/login');
 
-  const router = useRouter();
+    const router = useRouter();
 
     function setBase(dev: string, prod: string) {
       if (dev != undefined || dev != null || dev != '')
@@ -29,8 +29,11 @@ export default function useNoPWD(): INoPWDStore {
     }
 
     function setRoutes(app: string, login: string) {
-      appUrl.value = app;
-      loginUrl.value = login;
+      if (app != undefined || app != null || app != '')
+        appUrl.value = app;
+      if (login != undefined || login != null || login != '')
+        loginUrl.value = login;
+
     }
 
     function setUrls(request: string, verify: string, confirm: string, logout: string) {
@@ -47,8 +50,9 @@ export default function useNoPWD(): INoPWDStore {
     const success = ref(false);
     const is_error = ref(false);
     const code = ref(0);
-    const IDSite = useStorage('nopwd_site', Guid.EMPTY);
-    const IDLogin = useStorage('nopwd_login', Guid.EMPTY);
+    const IDSite = useStorage('nopwd_siteid', Guid.EMPTY);
+    const IDSiteCall = useStorage('nopwd_sitecallid', Guid.EMPTY);
+    const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY);
     const auth = useStorage('nopwd_auth', 0);
     const userSession = useStorage('nopwd_session', '');
 
@@ -59,7 +63,7 @@ export default function useNoPWD(): INoPWDStore {
         headers: {
           Accept: 'application/json',
           'X-LoginId': IDLogin.value,
-          'X-SiteId': IDSite.value,
+          'X-SiteCallId': IDSiteCall.value,
           'Content-Type': 'application/json'
         }
       };
@@ -126,6 +130,7 @@ export default function useNoPWD(): INoPWDStore {
             code.value = res.code;
             if (res.code > 0) {
               auth.value = 2;
+              IDSiteCall.value = res.data.sitecallid;
               userSession.value = JSON.stringify(res.data);
               setTimeout(checkAccess, 20000);
               if (appUrl.value !== undefined || appUrl.value !== null || appUrl.value !== '')
@@ -211,6 +216,7 @@ export default function useNoPWD(): INoPWDStore {
       success,
       code,
       IDLogin,
+      IDSiteCall,
       IDSite,
       QRCode,
       Message,

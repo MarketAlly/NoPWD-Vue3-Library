@@ -1,7 +1,7 @@
 {
   "name": "@marketally/nopwd-vue3-library",
   "private": false,
-  "version": "0.3.4",
+  "version": "0.3.7",
   "type": "module",
   "author": "MarketAlly",
   "license": "MIT",
