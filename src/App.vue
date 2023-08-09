@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import Login from './components/Login.vue'
+import image from '@/assets/NOPWD.png';
 </script>
 
 <template>
   <div>
     <a href="https://www.nopwd.com" target="_blank">
-      <img src="/src/assets/NOPWD.png" class="logo" alt="NoPWD logo" />
+      <img :src="image" class="logo" alt="NoPWD logo" />
     </a>
   </div>
   <Login :isMobileScreen="false" configDev="https://localhost:7251/" :showButton="false" :isDark="true" secondary-dark="#242424" primary-dark="#ff0000" />

@@ -11,6 +11,9 @@ const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, set
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
+import imageWhite from '@/assets/nopwd_white.png';
+import imageBlack from '@/assets/nopwd_black.png';
+
 tryOnMounted(() => {
     IDSite.value = props.SiteId
     setBase(props.configDev, props.configProduction)
@@ -137,7 +140,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? '/src/assets/nopwd_black.png' : ''"
+                        :image="logoDark.length == 0 ? imageBlack : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -171,7 +174,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? '/src/assets/nopwd_white.png' : ''"
+                        :image="logoDark.length == 0 ? imageWhite : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -206,7 +209,7 @@ function clickHandler() {
                         :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
                         :href="QRCode"
                         >
-                        <img width="150" :src="logoDark.length == 0 ? '/src/assets/nopwd_black.png' : ''" />
+                        <img width="150" :src="logoDark.length == 0 ? imageBlack : ''" />
                         <br/><br/><span>{{ t('auth.login') }}</span>
                     </button>
                 </div>
@@ -223,7 +226,7 @@ function clickHandler() {
                 :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
                 :href="QRCode"
                 >
-                <img width="80" :src="logoDark.length == 0 ? '@src/assets/nopwd_black.png' : ''" />
+                <img width="80" :src="logoDark.length == 0 ? imageBlack : ''" />
                 <br/><span>{{ t('auth.appinstalled') }}</span>
             </button>
         </div>
