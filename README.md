@@ -24,14 +24,10 @@ npm install @marketally/nopwd-vue3-library
 Here's a basic example of how to use
 
 ```javascript
-import { createApp } from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import NopwdVue3Library from 'your-package-name';
 
-import plugin from '@marketally/nopwd-vue3-library'
-
-createApp(App)
-  .use(plugin)
-  .mount('#app')
+Vue.use(NopwdVue3Library);
 
 <template>
   <Login />

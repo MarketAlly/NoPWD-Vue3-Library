@@ -1,11 +1,13 @@
 import type { App } from 'vue';
-import { Login, Preloader } from "@/components";
+import useNoPWD from '@/store'
+import { Login, Preloader } from '@/components';
 
-export default {
+const NopwdVue3Library = {
   install: (app: App) => {
     app.component('Login', Login);
     app.component('Preloader', Preloader);
-  }
+  },
 };
 
-export { Login, Preloader };
+export default NopwdVue3Library;
+export { Login, Preloader, useNoPWD };

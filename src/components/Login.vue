@@ -1,32 +1,25 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch, watchEffect } from 'vue';
-import { useAuthStore } from '@/store'
-import { useI18n } from 'vue-i18n'
-import { createPinia, setActivePinia, storeToRefs } from 'pinia'
+import useNoPWD from '@/store'
+import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
 import Preloader from './Preloader.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
-const { locale, t } = useI18n()
-const store = useAuthStore()
-const Auth = storeToRefs(store)
+const { t } = useTranslations();
+const { IsLoggedIn, loginQRCode, checkQRLogin, success, QRCode, is_error, Message } = useNoPWD();
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
-const QRCode = ref('')
-
-onBeforeMount(() => {
-    setActivePinia(createPinia())
-})
+const WorkingQRCode = ref('')
 
 tryOnMounted(() => {
-  if (!store.IsLoggedIn) {
-    store.loginQRCode()
+  if (!IsLoggedIn) {
+    loginQRCode()
   } else {
-    store.checkQRLogin()
+    checkQRLogin()
   }
   watchEffect(() => {
-    if (Auth.success.value === true) {
-      QRCode.value = Auth.QRCode.value
+    if (success.value === true) {
       showQRCode.value = true
     } else {
       showQRCode.value = false
@@ -92,17 +85,13 @@ function clickHandler() {
     window.open(QRCode.value,'new_window');
 }
 
-watch(locale, () => {
-  defaultLocale.value = locale.value
-})
-
 </script>
 
 <template>
     <div>
         <div>
             <div style="text-align: center">
-                <div @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="store.success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
+                <div @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
                     <QRCodeVue3
                         v-if="props.isDark"
                         :key="QRCode"
@@ -172,7 +161,7 @@ watch(locale, () => {
                         :download="false"
                     />
                 </div>
-                <div v-else-if="store.success && props.isMobileScreen" style="text-align: center">
+                <div v-else-if="success && props.isMobileScreen" style="text-align: center">
                     <button v-if="showQRCode" 
                         style="width: 300px; height: 300px;"
                         :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
@@ -182,13 +171,13 @@ watch(locale, () => {
                         <br/><br/><span>{{ t('auth.login') }}</span>
                     </button>
                 </div>
-                <div v-else-if="!store.success" style="text-align: center">
-                    <Preloader v-if="!store.is_error" width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
+                <div v-else-if="!success" style="text-align: center">
+                    <Preloader v-if="!is_error" width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
                 </div>
-                <div v-html="store.Message" style="text-align: center"></div>
+                <div v-html="Message" style="text-align: center"></div>
             </div>
         </div>
-        <div v-if="store.success && !props.isMobileScreen && props.showButton" style="text-align: center">
+        <div v-if="success && !props.isMobileScreen && props.showButton" style="text-align: center">
             <br/>   
             <button v-if="showQRCode" 
                 style="width: 300px; height: 120px;" 

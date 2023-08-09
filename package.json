@@ -1,7 +1,7 @@
 {
   "name": "@marketally/nopwd-vue3-library",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.3.4",
   "type": "module",
   "author": "MarketAlly",
   "license": "MIT",
@@ -9,33 +9,30 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/nopwd-vue3-library.umd.js",
-  "module": "./dist/nopwd-vue3-library.es.js",
+  "main": "./dist/nopwdVue3Library.umd.js",
+  "module": "./dist/nopwdVue3Library.es.js",
   "exports": {
     ".": {
-      "import": "./dist/nopwd-vue3-library.es.js",
-      "require": "./dist/nopwd-vue3-library.umd.js"
+      "import": "./dist/nopwdVue3Library.es.js",
+      "require": "./dist/nopwdVue3Library.umd.js"
     },
-    "./dist/nopwd-vue3-library.css": {
-      "import": "./dist/nopwd-vue3-library.css",
-      "require": "./dist/nopwd-vue3-library.css"
+    "./dist/nopwdVue3Library.css": {
+      "import": "./dist/nopwdVue3Library.css",
+      "require": "./dist/nopwdVue3Library.css"
     }
   },
-  "types": "./dist/main.d.ts",
+  "types": "nopwd-vue3-library.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/vue-i18n": "^7.0.0",
     "@vueuse/core": "^10.2.1",
     "axios": "^1.4.0",
     "guid-typescript": "^1.0.9",
-    "pinia": "^2.1.4",
     "qrcode-vue3": "^1.6.8",
     "vue": "^3.2.45",
-    "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {

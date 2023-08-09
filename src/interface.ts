@@ -1,4 +1,5 @@
 import AxiosInstance from 'axios'
+import { Ref } from 'vue';
 const isLocalhost = window.location.hostname === 'localhost';
 
 const apiClient = AxiosInstance.create({
@@ -24,6 +25,33 @@ const serviceCall = {
       return this.apiClient.defaults.baseURL;
   },
 };
+
+export interface INoPWDStore {
+  auth: Ref<number>;
+  success: Ref<boolean>;
+  code: Ref<number>;
+  IDLogin: Ref<string>;
+  IDSite: Ref<string>;
+  QRCode: Ref<string>;
+  Message: Ref<string>;
+  is_error: Ref<boolean>;
+  loginQRCode: () => Promise<number | undefined>;
+  checkAccess: () => Promise<void>;
+  checkQRLogin: () => Promise<number | undefined>;
+  logout: () => Promise<void>;
+  config: () => {
+    headers: {
+      Accept: string;
+      'X-LoginId': string;
+      'X-SiteId': string;
+      'Content-Type': string;
+    };
+  };
+  IsLoggedIn: () => boolean;
+  setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
+  setRoutes: (app: string, login: string) => void;
+  setBase: (dev: string, prod: string) => void;
+}
 
 export default serviceCall
 
