@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import * as path from 'path'
-import typescript2 from 'rollup-plugin-typescript2';
-import dts from "vite-plugin-dts";
+import typescript2 from 'rollup-plugin-typescript2'
+import dts from "vite-plugin-dts"
+import copy from 'rollup-plugin-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,7 +24,12 @@ export default defineConfig({
         },
       },
       exclude: ["vite.config.ts"]
-    })
+    }),
+    copy({ // Add this plugin configuration
+      targets: [
+        { src: 'src/assets/*.png', dest: 'dist/assets' },
+      ],
+    }),
   ],
   build: {
     cssCodeSplit: true,
