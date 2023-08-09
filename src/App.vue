@@ -5,10 +5,10 @@ import Login from './components/Login.vue'
 <template>
   <div>
     <a href="https://www.nopwd.com" target="_blank">
-      <img src="/assets/NOPWD.png" class="logo" alt="NoPWD logo" />
+      <img src="/src/assets/NOPWD.png" class="logo" alt="NoPWD logo" />
     </a>
   </div>
-  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :showButton="true" :isDark="true" secondary-dark="#242424" primary-dark="#ff0000" />
+  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :showButton="false" :isDark="true" secondary-dark="#242424" primary-dark="#ff0000" />
 </template>
 
 <style scoped>

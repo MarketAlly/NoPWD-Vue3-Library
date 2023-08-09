@@ -6179,7 +6179,7 @@ const _l = (e, t) => {
               width: 300,
               height: 300,
               value: ne(a),
-              image: e.logoDark.length == 0 ? "/assets/nopwd_black.png" : "",
+              image: e.logoDark.length == 0 ? "/src/assets/nopwd_black.png" : "",
               "qr-options": {
                 typeNumber: 0,
                 mode: "Byte",
@@ -6212,7 +6212,7 @@ const _l = (e, t) => {
               width: 300,
               height: 300,
               value: ne(a),
-              image: e.logoDark.length == 0 ? "/assets/nopwd_white.png" : "",
+              image: e.logoDark.length == 0 ? "/src/assets/nopwd_white.png" : "",
               "qr-options": {
                 typeNumber: 0,
                 mode: "Byte",
@@ -6248,7 +6248,7 @@ const _l = (e, t) => {
             }, [
               Ee("img", {
                 width: "150",
-                src: e.logoDark.length == 0 ? "/assets/nopwd_black.png" : ""
+                src: e.logoDark.length == 0 ? "/src/assets/nopwd_black.png" : ""
               }, null, 8, xl),
               Nl,
               Dl,
@@ -6278,7 +6278,7 @@ const _l = (e, t) => {
         }, [
           Ee("img", {
             width: "80",
-            src: e.logoDark.length == 0 ? "/assets/nopwd_black.png" : ""
+            src: e.logoDark.length == 0 ? "@src/assets/nopwd_black.png" : ""
           }, null, 8, Tl),
           Al,
           Ee("span", null, yr(ne(n)("auth.appinstalled")), 1)

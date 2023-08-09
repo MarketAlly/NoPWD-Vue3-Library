@@ -137,7 +137,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''"
+                        :image="logoDark.length == 0 ? '/src/assets/nopwd_black.png' : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -171,7 +171,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? '/assets/nopwd_white.png' : ''"
+                        :image="logoDark.length == 0 ? '/src/assets/nopwd_white.png' : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -206,7 +206,7 @@ function clickHandler() {
                         :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
                         :href="QRCode"
                         >
-                        <img width="150" :src="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''" />
+                        <img width="150" :src="logoDark.length == 0 ? '/src/assets/nopwd_black.png' : ''" />
                         <br/><br/><span>{{ t('auth.login') }}</span>
                     </button>
                 </div>
@@ -223,7 +223,7 @@ function clickHandler() {
                 :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
                 :href="QRCode"
                 >
-                <img width="80" :src="logoDark.length == 0 ? '/assets/nopwd_black.png' : ''" />
+                <img width="80" :src="logoDark.length == 0 ? '@src/assets/nopwd_black.png' : ''" />
                 <br/><span>{{ t('auth.appinstalled') }}</span>
             </button>
         </div>
