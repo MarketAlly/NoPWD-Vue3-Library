@@ -25,18 +25,13 @@ npm install @marketally/nopwd-vue3-library
 
 To use the NoPWD Vue3 component in your project, follow the steps below:
 
-1. **Importing and Global Registration**:
-
-```javascript
-import Vue from 'vue';
-import NopwdVue3Library, { Login, Preloader } from '@marketally/nopwd-vue3-library';
-
-Vue.use(NopwdVue3Library);
-```
-
-2. **Using the Component**:
+1. **Using the Component**:
 
 ```vue
+<script setup>
+import Login from '@marketally/nopwd-vue3-library';
+</script>
+
 <template>
   <Login 
     :isMobileScreen="true"
@@ -49,7 +44,7 @@ Vue.use(NopwdVue3Library);
 </template>
 ```
 
-3. **Listening to Events**:
+2. **Listening to Events**:
 
 You can also listen to events emitted by the component, such as `Error`, `Redirect`, and `Status` to handle different scenarios in the authentication process.
 
