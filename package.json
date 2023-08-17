@@ -1,13 +1,14 @@
 {
   "name": "@marketally/nopwd-vue3-library",
   "private": false,
-  "version": "0.5.3",
+  "version": "1.0.0",
   "type": "module",
   "author": "MarketAlly",
   "license": "MIT",
   "description": "Provides a login module for the nopwd system and support libraries",
   "files": [
-    "dist"
+    "dist",
+    "nopwd-vue3-library.d.ts"
   ],
   "main": "./dist/nopwdVue3Library.umd.js",
   "module": "./dist/nopwdVue3Library.es.js",
@@ -21,7 +22,7 @@
       "require": "./dist/nopwdVue3Library.css"
     }
   },
-  "types": "types.d.ts",
+  "types": "nopwd-vue3-library.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",

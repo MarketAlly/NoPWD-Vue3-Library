@@ -29,6 +29,7 @@
   },
   "include": [
     "types.d.ts", 
+    "nopwd-vue3-library.d.ts",
     "src/**/*.ts", 
     "src/**/*.png", 
     "src/**/*.d.ts", 

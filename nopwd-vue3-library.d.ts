@@ -65,6 +65,7 @@ declare module '@marketally/nopwd-vue3-library' {
 
     export default LoginComponent;
     export {
+        LoginComponent as Login,
         PreloaderComponent as Preloader,
         useNoPWD
     };
