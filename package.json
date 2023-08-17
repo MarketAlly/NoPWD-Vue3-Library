@@ -1,7 +1,7 @@
 {
   "name": "@marketally/nopwd-vue3-library",
   "private": false,
-  "version": "0.5.2",
+  "version": "0.5.3",
   "type": "module",
   "author": "MarketAlly",
   "license": "MIT",
@@ -21,7 +21,7 @@
       "require": "./dist/nopwdVue3Library.css"
     }
   },
-  "types": "nopwd-vue3-library.d.ts",
+  "types": "types.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",

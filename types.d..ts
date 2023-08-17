@@ -1,7 +1,13 @@
 declare module '@marketally/nopwd-vue3-library' {
 
-    import { DefineComponent } from 'vue';
+    import { DefineComponent, Ref } from 'vue';
   
+    type EmitType = {
+        (event: 'Error', args: string): void;
+        (event: 'Redirect', args: string): void;
+        (event: 'Status', args: number): void;
+      };
+
     interface NoPWDProps {
       isMobileScreen?: boolean;
       showButton?: boolean;
@@ -34,11 +40,32 @@ declare module '@marketally/nopwd-vue3-library' {
         dark?: boolean;
     }
   
+    interface UseNoPWDResult {
+        auth: Ref<number>;
+        success: Ref<boolean>;
+        code: Ref<number>;
+        IDLogin: Ref<string>;
+        QRCode: Ref<string>;
+        Message: Ref<string>;
+        is_error: Ref<boolean>;
+        loginQRCode: () => Promise<number | undefined>;
+        checkAccess: () => Promise<void>;
+        checkQRLogin: () => Promise<number | undefined>;
+        logout: () => Promise<void>;
+        config: () => { headers: { [key: string]: string } };
+        setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
+        setRoutes: (app: string, login: string) => void;
+        setBase: (dev: string, prod: string) => void;
+    }
+
+    function useNoPWD(emit?: EmitType): UseNoPWDResult;
+
     const LoginComponent: DefineComponent<NoPWDProps>; 
     const PreloaderComponent: DefineComponent<PreloaderProps>; 
 
     export default LoginComponent;
     export {
-        PreloaderComponent as Preloader
+        PreloaderComponent as Preloader,
+        useNoPWD
     };
 }
