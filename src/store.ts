@@ -1,12 +1,17 @@
 import { ref } from 'vue';
 import { useTranslations } from './useTranslations';
 import { useStorage } from '@vueuse/core';
-import { useRouter } from 'vue-router';
 import { Guid } from 'guid-typescript';
 import serviceCall from './interface';
 import { INoPWD, type IValue, type apiResponse, type apiResponses, type INoPWDStore } from './interface';
 
-export default function useNoPWD(): INoPWDStore {
+type EmitType = {
+  (event: 'Error', args: string): void;
+  (event: 'Redirect', args: string): void;
+  (event: 'Status', args: number): void;
+};
+
+export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
 
     const requestUrl = useStorage('nopwd_request','api/requestloginkey', sessionStorage);
     const verifyUrl = useStorage('nopwd_verify','api/verifyaccess', sessionStorage);
@@ -19,8 +24,6 @@ export default function useNoPWD(): INoPWDStore {
     const appUrl = useStorage('nopwd_app','/app', sessionStorage);
     const loginUrl = useStorage('nopwd_login','/auth/login', sessionStorage);
     const logConsole = useStorage('nopwd_log', false, sessionStorage);
-
-    const router = useRouter();
 
     function setBase(dev: string, prod: string) {
       if (dev != undefined && dev != null && dev != '')
@@ -51,8 +54,6 @@ export default function useNoPWD(): INoPWDStore {
     const success = ref(false);
     const is_error = ref(false);
     const code = ref(0);
-    const IDSite = useStorage('nopwd_siteid', Guid.EMPTY, sessionStorage);
-    const IDSiteCall = useStorage('nopwd_sitecallid', Guid.EMPTY, sessionStorage);
     const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY, sessionStorage);
     const auth = useStorage('nopwd_auth', 0, sessionStorage);
     const userSession = useStorage('nopwd_session', '', sessionStorage);
@@ -64,7 +65,6 @@ export default function useNoPWD(): INoPWDStore {
         headers: {
           Accept: 'application/json',
           'X-LoginId': IDLogin.value,
-          'X-SiteCallId': IDSiteCall.value,
           'Content-Type': 'application/json'
         }
       };
@@ -85,7 +85,7 @@ export default function useNoPWD(): INoPWDStore {
           console.log('Login: ' + IDLogin.value);
         serviceCall.setBaseURL(devUrl.value, prodUrl.value);
         let aURL = serviceCall.getBaseURL() + requestUrl.value
-        return await serviceCall.apiClient.get<apiResponse>(aURL, config()).then((response) => {
+        return await serviceCall.apiClient.get<apiResponse>(aURL, config()).then((response: { data: apiResponse; }) => {
           const res: apiResponse = response.data;
           if (res.success) {
             Message.value = '';
@@ -105,8 +105,10 @@ export default function useNoPWD(): INoPWDStore {
             Message.value = t('auth.codeerror');
             return -1;
           }
-        }).catch(error => {
+        }).catch((error: { message: string; }) => {
           console.log(error);
+          if (emit)
+            emit("Error", error.message)
           is_error.value = true;
           Message.value = t('auth.codeerror');
           return -1;
@@ -129,21 +131,24 @@ export default function useNoPWD(): INoPWDStore {
           console.log('Check: ' + IDLogin.value);
       return await serviceCall.apiClient
         .get(aURL, config())
-        .then(async (response) => {
+        .then(async (response: { data: apiResponses<INoPWD>; }) => {
           const res: apiResponses<INoPWD> = response.data;
           if (res.success) {
             success.value = res.success;
             code.value = res.code;
             if (res.code > 0) {
               auth.value = 2;
-              IDSiteCall.value = res.data.sitecallid;
               userSession.value = JSON.stringify(res.data);
               setTimeout(checkAccess, 20000);
-              if (appUrl.value !== undefined || appUrl.value !== null || appUrl.value !== '')
-                router.push(appUrl.value);
+              if (emit)
+                emit("Redirect", appUrl.value)
+              if (emit)
+                emit("Status", auth.value)
               return 1;
             } else if (res.code < 0) {
               auth.value = 0;
+              if (emit)
+                emit("Status", auth.value)
               checkAccess();
               return -1;
             } else {
@@ -158,7 +163,9 @@ export default function useNoPWD(): INoPWDStore {
           } else {
             await loginQRCode()
           }
-        }).catch(error => {
+        }).catch((error: { message: string; }) => {
+          if (emit)
+            emit("Error", error.message)
           if (logConsole.value)
             console.log(error);
           is_error.value = true;
@@ -178,7 +185,7 @@ export default function useNoPWD(): INoPWDStore {
       let aURL = serviceCall.getBaseURL() + confirmUrl.value
       await serviceCall.apiClient
         .get(aURL, config())
-        .then((response) => {
+        .then((response: { data: apiResponse; }) => {
           const res: apiResponse = response.data;
 
           if (res.success) {
@@ -188,12 +195,16 @@ export default function useNoPWD(): INoPWDStore {
               setTimeout(checkAccess, 20000);
             } else {
               auth.value = 0;
+              if (emit)
+                emit("Status", auth.value)
               userSession.value = '';
-              if (loginUrl.value !== undefined || loginUrl.value !== null || loginUrl.value !== '')
-                router.push(loginUrl.value);
+              if (emit)
+                emit("Redirect", loginUrl.value)
             }
           }
-        }).catch(error => {
+        }).catch((error: { message: string; }) => {
+          if (emit)
+            emit("Error", error.message)
           if (logConsole.value)
             console.log(error);
           is_error.value = true;
@@ -209,17 +220,19 @@ export default function useNoPWD(): INoPWDStore {
       let aURL = serviceCall.getBaseURL() + logoutUrl.value
       await serviceCall.apiClient
         .get(aURL, config())
-        .then((response) => {
+        .then((response: { data: apiResponse; }) => {
           const res: apiResponse = response.data;
           success.value = res.success;
           code.value = res.code;
 
           if (success.value) {
             auth.value = 0;
+            if (emit)
+              emit("Status", auth.value)
             IDLogin.value = Guid.EMPTY.toString();
           }
-          if (loginUrl.value !== undefined || loginUrl.value !== null || loginUrl.value !== '')
-            router.push(loginUrl.value);
+          if (emit)
+            emit("Redirect", loginUrl.value)
         });
     }
 
@@ -228,8 +241,6 @@ export default function useNoPWD(): INoPWDStore {
       success,
       code,
       IDLogin,
-      IDSiteCall,
-      IDSite,
       QRCode,
       Message,
       is_error,

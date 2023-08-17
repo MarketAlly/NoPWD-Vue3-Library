@@ -1,13 +1,32 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import useNoPWD from '@/store'
 import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
 import Preloader from './Preloader.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
+const emit = defineEmits<{
+    (event: 'Error', args: string): void;
+    (event: 'Redirect', args: string): void;
+    (event: 'Status', args: number): void;
+}>();
+
+const internalEmitHandler = (event: string, payload: any) => {
+    if (event === 'Error') {
+        emit('Error', payload)
+        console.log('Error event received with payload:', payload);
+    } else if (event === 'Redirect') {
+        emit('Redirect', payload)
+        console.log('Redirect event received with payload:', payload);
+    } else if (event === 'Status') {
+        emit('Status', payload)
+        console.log('Status event received with payload:', payload);
+    }
+}
+
 const { t } = useTranslations();
-const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes, IDSite } = useNoPWD();
+const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
@@ -15,7 +34,6 @@ import imageWhite from '@/assets/nopwd_white.png';
 import imageBlack from '@/assets/nopwd_black.png';
 
 tryOnMounted(() => {
-    IDSite.value = props.SiteId
     setBase(props.configDev, props.configProduction)
     setRoutes(props.configApp, props.configLogin)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
@@ -113,11 +131,7 @@ const props = defineProps({
     configLogout: {
         type: String,
         default: '',
-    },
-    SiteId: {
-        type: String,
-        default: '',
-    },
+    }
 })
 
 function clickHandler() {

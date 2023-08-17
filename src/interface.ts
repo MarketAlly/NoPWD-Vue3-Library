@@ -31,8 +31,6 @@ export interface INoPWDStore {
   success: Ref<boolean>;
   code: Ref<number>;
   IDLogin: Ref<string>;
-  IDSite: Ref<string>;
-  IDSiteCall: Ref<string>;
   QRCode: Ref<string>;
   Message: Ref<string>;
   is_error: Ref<boolean>;
@@ -44,7 +42,6 @@ export interface INoPWDStore {
     headers: {
       Accept: string;
       'X-LoginId': string;
-      'X-SiteCallId': string;
       'Content-Type': string;
     };
   };
@@ -78,7 +75,6 @@ export interface IStatus {
       name: string;
       email: string;
       avatar: string;
-      sitecallid: string;
       isonline: boolean;
     }
   

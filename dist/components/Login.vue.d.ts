@@ -79,11 +79,9 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    SiteId: {
-        type: StringConstructor;
-        default: string;
-    };
 }, {
+    emit: (event: "Error" | "Redirect" | "Status", ...args: any[]) => void;
+    internalEmitHandler: (event: string, payload: any) => void;
     t: (key: string) => string;
     auth: import("vue").Ref<number>;
     loginQRCode: () => Promise<number | undefined>;
@@ -95,7 +93,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     setBase: (dev: string, prod: string) => void;
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
     setRoutes: (app: string, login: string) => void;
-    IDSite: import("vue").Ref<string>;
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
     props: any;
@@ -141,7 +138,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     }, {}>;
     readonly imageWhite: string;
     readonly imageBlack: string;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {}, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("Error" | "Redirect" | "Status")[], "Error" | "Redirect" | "Status", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     isMobileScreen: {
         type: BooleanConstructor;
         default: boolean;
@@ -222,11 +219,11 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    SiteId: {
-        type: StringConstructor;
-        default: string;
-    };
-}>>, {
+}>> & {
+    onError?: ((...args: any[]) => any) | undefined;
+    onRedirect?: ((...args: any[]) => any) | undefined;
+    onStatus?: ((...args: any[]) => any) | undefined;
+}, {
     isMobileScreen: boolean;
     showButton: boolean;
     primaryDark: string;
@@ -247,6 +244,5 @@ declare const _sfc_main: import("vue").DefineComponent<{
     configVerify: string;
     configConfirm: string;
     configLogout: string;
-    SiteId: string;
 }, {}>;
 export default _sfc_main;
