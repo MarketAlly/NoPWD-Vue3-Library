@@ -29,7 +29,7 @@ To use the NoPWD Vue3 component in your project, follow the steps below:
 
 ```javascript
 import Vue from 'vue';
-import NopwdVue3Library from '@marketally/nopwd-vue3-library';
+import NopwdVue3Library, { Login, Preloader } from '@marketally/nopwd-vue3-library';
 
 Vue.use(NopwdVue3Library);
 ```
@@ -38,7 +38,7 @@ Vue.use(NopwdVue3Library);
 
 ```vue
 <template>
-  <NoPWD 
+  <Login 
     :isMobileScreen="true"
     :showButton="true"
     :isDark="false"
