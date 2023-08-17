@@ -53,6 +53,33 @@ Vue.use(NopwdVue3Library);
 
 You can also listen to events emitted by the component, such as `Error`, `Redirect`, and `Status` to handle different scenarios in the authentication process.
 
+## 📖 Documentation
+
+| Property          | Type     | Default Value | Description                                                                                                                                                          |
+|-------------------|----------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isMobileScreen`  | Boolean  | `false`      | Determines if the screen size is mobile.                                                                                                                             |
+| `showButton`      | Boolean  | `false`      | Determines if a button should be displayed below the QR code.                                                                                                        |
+| `primaryDark`     | String   | `#c48a56`    | Primary dark color theme.                                                                                                                                            |
+| `primaryLight`    | String   | `#606C38`    | Primary light color theme.                                                                                                                                           |
+| `secondaryDark`   | String   | `#18181b`    | Secondary dark color theme.                                                                                                                                          |
+| `secondaryLight`  | String   | `#ffffff`    | Secondary light color theme.                                                                                                                                         |
+| `isDark`          | Boolean  | `false`      | Determines if dark mode is active.                                                                                                                                   |
+| `positionLight`   | String   | `#000000`    | Light color for QR code position markers.                                                                                                                            |
+| `positionDark`    | String   | `#ffffff`    | Dark color for QR code position markers.                                                                                                                             |
+| `accentColor`     | String   | `#ffffff`    | Accent color for various UI elements.                                                                                                                                |
+| `logoDark`        | String   | `''`         | URL for the dark-themed logo.                                                                                                                                        |
+| `logoLight`       | String   | `''`         | URL for the light-themed logo.                                                                                                                                       |
+| `configDev`       | String   | `''`         | Configuration URL for the development environment. (e.g. http://localhost:3000)                                                                                          |
+| `configProduction`| String   | `''`         | Configuration URL for the production environment. (e.g. https://www<yoursite>.com)                                                                                           |
+| `configApp`       | String   | `''`         | App configuration URL. (e.g. '/app')                                                                                                                      |
+| `configLogin`     | String   | `''`         | Login configuration URL. (e.g. '/auth/login')                                                                                                                    |
+| `configRequest`   | String   | `''`         | Request configuration URL. This is used to request the code from your service which contacts the NoPWD system.                                                                                                                  |
+| `configVerify`    | String   | `''`         | Verify configuration URL. Calls your service to verify the status of the request                                                                                                                   |
+| `configConfirm`   | String   | `''`         | Confirmation configuration URL. oOnfirms the access is still valid                                                                                                             |
+| `configLogout`    | String   | `''`         | Logout configuration URL. THe service call to your service whethr to log the user out.                                                                                                                   |
+
+Each property can be easily customized to fit the design and functionality needs of your application. Adjust the defaults as necessary to achieve your desired look and behavior.
+
 ## 📃 License
 
 NoPWD is licensed under the MIT License.
