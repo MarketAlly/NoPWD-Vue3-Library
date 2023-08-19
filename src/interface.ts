@@ -7,7 +7,7 @@ const apiClient = AxiosInstance.create({
   withCredentials: false,
 });
 
-let developURL: string | undefined = 'https://dev-url.com/';
+let developURL: string | undefined = 'https://localhost/';
 let productionURL: string | undefined = '';
 
 const serviceCall = {
@@ -33,6 +33,7 @@ export interface INoPWDStore {
   IDLogin: Ref<string>;
   QRCode: Ref<string>;
   Message: Ref<string>;
+  user_data: Ref<string>;
   is_error: Ref<boolean>;
   loginQRCode: () => Promise<number | undefined>;
   checkAccess: () => Promise<void>;

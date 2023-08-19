@@ -6,6 +6,7 @@ declare module '@marketally/nopwd-vue3-library' {
         (event: 'Error', args: string): void;
         (event: 'Redirect', args: string): void;
         (event: 'Status', args: number): void;
+        (event: 'User', args: string): void;
       };
 
     interface NoPWDProps {
@@ -47,6 +48,7 @@ declare module '@marketally/nopwd-vue3-library' {
         IDLogin: Ref<string>;
         QRCode: Ref<string>;
         Message: Ref<string>;
+        user_data: Ref<string>;
         is_error: Ref<boolean>;
         loginQRCode: () => Promise<number | undefined>;
         checkAccess: () => Promise<void>;

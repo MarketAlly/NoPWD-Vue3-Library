@@ -1,9 +1,11 @@
 import { Ref } from 'vue';
+
 declare const serviceCall: {
     apiClient: import("axios").AxiosInstance;
     setBaseURL: (devURL: string | undefined, prodURL: string | undefined) => void;
     getBaseURL: () => string | undefined;
 };
+
 export interface INoPWDStore {
     auth: Ref<number>;
     success: Ref<boolean>;
@@ -11,6 +13,7 @@ export interface INoPWDStore {
     IDLogin: Ref<string>;
     QRCode: Ref<string>;
     Message: Ref<string>;
+    user_data: Ref<string>;
     is_error: Ref<boolean>;
     loginQRCode: () => Promise<number | undefined>;
     checkAccess: () => Promise<void>;

@@ -3,15 +3,16 @@ import { useTranslations } from './useTranslations';
 import { useStorage } from '@vueuse/core';
 import { Guid } from 'guid-typescript';
 import serviceCall from './interface';
-import { INoPWD, type IValue, type apiResponse, type apiResponses, type INoPWDStore } from './interface';
+import { type IValue, type apiResponse, type apiResponses, type INoPWDStore } from './interface';
 
 type EmitType = {
   (event: 'Error', args: string): void;
   (event: 'Redirect', args: string): void;
   (event: 'Status', args: number): void;
+  (event: 'User', args: string): void;
 };
 
-export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
+export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
 
     const requestUrl = useStorage('nopwd_request','api/requestloginkey', sessionStorage);
     const verifyUrl = useStorage('nopwd_verify','api/verifyaccess', sessionStorage);
@@ -24,6 +25,13 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
     const appUrl = useStorage('nopwd_app','/app', sessionStorage);
     const loginUrl = useStorage('nopwd_login','/auth/login', sessionStorage);
     const logConsole = useStorage('nopwd_log', false, sessionStorage);
+
+    const success = ref(false);
+    const is_error = ref(false);
+    const code = ref(0);
+    const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY, sessionStorage);
+    const auth = useStorage('nopwd_auth', 0, sessionStorage);
+    const user_data = useStorage('nopwd_session', '', sessionStorage);
 
     function setBase(dev: string, prod: string) {
       if (dev != undefined && dev != null && dev != '')
@@ -50,13 +58,6 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
       if (logout != undefined && logout != null && logout != '')
         logoutUrl.value = logout;
     }
-
-    const success = ref(false);
-    const is_error = ref(false);
-    const code = ref(0);
-    const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY, sessionStorage);
-    const auth = useStorage('nopwd_auth', 0, sessionStorage);
-    const userSession = useStorage('nopwd_session', '', sessionStorage);
 
     const { t } = useTranslations();
 
@@ -130,14 +131,16 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
           console.log('Check: ' + IDLogin.value);
       return await serviceCall.apiClient
         .get(aURL, config())
-        .then(async (response: { data: apiResponses<INoPWD>; }) => {
-          const res: apiResponses<INoPWD> = response.data;
+        .then(async (response: { data: apiResponses<any>; }) => {
+          const res: apiResponses<any> = response.data;
           if (res.success) {
             success.value = res.success;
             code.value = res.code;
             if (res.code > 0) {
+              user_data.value = JSON.stringify(res.data);
+              if (emit)
+                emit("User", user_data.value)
               auth.value = 2;
-              userSession.value = JSON.stringify(res.data);
               setTimeout(checkAccess, 20000);
               if (emit)
                 emit("Redirect", appUrl.value)
@@ -196,7 +199,9 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
               auth.value = 0;
               if (emit)
                 emit("Status", auth.value)
-              userSession.value = '';
+              user_data.value = '';
+              if (emit)
+                emit("User", user_data.value)
               if (emit)
                 emit("Redirect", loginUrl.value)
             }
@@ -238,6 +243,7 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
     return {
       auth,
       success,
+      user_data,
       code,
       IDLogin,
       QRCode,

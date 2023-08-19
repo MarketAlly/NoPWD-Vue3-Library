@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import useNoPWD from '@/store'
 import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
@@ -10,6 +10,7 @@ const emit = defineEmits<{
     (event: 'Error', args: string): void;
     (event: 'Redirect', args: string): void;
     (event: 'Status', args: number): void;
+    (event: 'User', args: string): void;
 }>();
 
 const internalEmitHandler = (event: string, payload: any) => {
@@ -22,11 +23,14 @@ const internalEmitHandler = (event: string, payload: any) => {
     } else if (event === 'Status') {
         emit('Status', payload)
         console.log('Status event received with payload:', payload);
+    } else if (event === 'User') {
+        emit('User', payload)
+        console.log('User event received with payload:', payload);
     }
 }
 
 const { t } = useTranslations();
-const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
+const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, user_data, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
