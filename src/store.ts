@@ -119,8 +119,7 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
         } else {
           Message.value = t('auth.codelight');
         }
-        checkQRLogin();
-        return 0;
+        return checkQRLogin();
       }
     }
 
@@ -149,7 +148,7 @@ export default function useNoPWD(emit: EmitType | undefined): INoPWDStore {
               auth.value = 0;
               if (emit)
                 emit("Status", auth.value)
-              checkAccess();
+              logout();
               return -1;
             } else {
               setTimeout(checkQRLogin, 1000);
