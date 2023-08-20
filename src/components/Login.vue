@@ -30,18 +30,19 @@ const internalEmitHandler = (event: string, payload: any) => {
 }
 
 const { t } = useTranslations();
-const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, user_data, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
+const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, IDLogin, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
 import imageWhite from '@/assets/nopwd_white.png';
 import imageBlack from '@/assets/nopwd_black.png';
+import { Guid } from 'guid-typescript';
 
 tryOnMounted(() => {
     setBase(props.configDev, props.configProduction)
     setRoutes(props.configApp, props.configLogin)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
-    if (auth.value < 2) {
+    if (auth.value < 2 || IDLogin.value === Guid.create().toString()) {
         loginQRCode()
     } else {
         checkQRLogin()
@@ -232,7 +233,7 @@ function clickHandler() {
                     </button>
                 </div>
                 <div v-else-if="!success" style="text-align: center">
-                    <Preloader v-if="!is_error" width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
+                    <Preloader width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
                 </div>
                 <div v-html="Message" style="text-align: center"></div>
             </div>

@@ -1,39 +1,5 @@
-declare const _sfc_main: import("vue").DefineComponent<{
-    width: {
-        type: StringConstructor;
-        default: string;
-    };
-    height: {
-        type: StringConstructor;
-        default: string;
-    };
-    mobileWidth: StringConstructor;
-    mobileHeight: StringConstructor;
-    disabled: BooleanConstructor;
-    dark: BooleanConstructor;
-}, {
-    props: any;
-    isDark: import("vue").Ref<boolean>;
-    mobileWidthValue: import("vue").Ref<string>;
-    mobileHeightValue: import("vue").Ref<string>;
-    loader: import("vue").Ref<HTMLDivElement | null>;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {}, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
-    width: {
-        type: StringConstructor;
-        default: string;
-    };
-    height: {
-        type: StringConstructor;
-        default: string;
-    };
-    mobileWidth: StringConstructor;
-    mobileHeight: StringConstructor;
-    disabled: BooleanConstructor;
-    dark: BooleanConstructor;
-}>>, {
-    width: string;
-    height: string;
-    disabled: boolean;
-    dark: boolean;
-}, {}>;
-export default _sfc_main;
+export * from "C:/Solutions/nopwd_library/src/components/Preloader.vue?vue&type=script&setup=true&lang.ts";
+import "C:/Solutions/nopwd_library/src/components/Preloader.vue?vue&type=style&index=0&scoped=f907348b&lang.css";
+declare const _default: any;
+export default _default;
+//# sourceMappingURL=Preloader.vue.d.ts.map

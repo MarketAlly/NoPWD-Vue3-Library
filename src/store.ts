@@ -45,7 +45,6 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
         appUrl.value = app;
       if (login != undefined && login != null && login != '')
         loginUrl.value = login;
-
     }
 
     function setUrls(request: string, verify: string, confirm: string, logout: string) {
@@ -151,7 +150,6 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
               auth.value = 0;
               if (emit)
                 emit("Status", auth.value)
-              logout();
               return -1;
             } else {
               setTimeout(checkQRLogin, 1000);
@@ -178,7 +176,6 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
 
     async function checkAccess() {
       if (auth.value < 2) {
-        logout();
         return;
       }
       serviceCall.setBaseURL(devUrl.value, prodUrl.value);
@@ -217,6 +214,9 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     }
 
     async function logout() {
+      if (auth.value == 0) {
+        return; 
+      }
       auth.value = 0;
       serviceCall.setBaseURL(devUrl.value, prodUrl.value);
       if (logConsole.value)
@@ -233,6 +233,9 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             auth.value = 0;
             if (emit)
               emit("Status", auth.value)
+            user_data.value = '';
+            if (emit)
+              emit("User", user_data.value)
             IDLogin.value = Guid.EMPTY.toString();
           }
           if (emit)

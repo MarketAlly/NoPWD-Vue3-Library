@@ -5,5 +5,5 @@ type EmitType = {
     (event: 'Status', args: number): void;
     (event: 'User', args: string): void;
 };
-export default function useNoPWD(emit: EmitType | undefined): INoPWDStore;
+export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore;
 export {};
