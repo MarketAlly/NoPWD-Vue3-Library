@@ -3,15 +3,14 @@ declare module '@marketally/nopwd-vue3-library' {
     import { DefineComponent, Ref } from 'vue';
   
     type EmitType = {
-        (event: 'Error', args: string): void;
-        (event: 'Redirect', args: string): void;
-        (event: 'Status', args: number): void;
-        (event: 'User', args: string): void;
+        (event: 'error', args: string): void;
+        (event: 'redirect', args: string): void;
+        (event: 'status', args: number): void;
+        (event: 'user', args: string): void;
       };
 
     interface NoPWDProps {
       isMobileScreen?: boolean;
-      showButton?: boolean;
       primaryDark?: string;
       primaryLight?: string;
       secondaryDark?: string;
@@ -49,11 +48,13 @@ declare module '@marketally/nopwd-vue3-library' {
         QRCode: Ref<string>;
         Message: Ref<string>;
         user_data: Ref<string>;
+        IsDark: Ref<boolean>;
         is_error: Ref<boolean>;
         loginQRCode: () => Promise<number | undefined>;
         checkAccess: () => Promise<void>;
         checkQRLogin: () => Promise<number | undefined>;
         logout: () => Promise<void>;
+        readMessage: () => string;
         config: () => { headers: { [key: string]: string } };
         setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
         setRoutes: (app: string, login: string) => void;

@@ -2,9 +2,15 @@
 import Login from './components/Login.vue'
 import image from '@/assets/NOPWD.png';
 import useNoPWD from './store';
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const store = useNoPWD()
+
+const IsDark = ref(false)
+
+function flipIt() {
+  IsDark.value = !IsDark.value
+}
 
 watch(store.auth, () => {
     if (store.auth.value === 2) {
@@ -22,7 +28,8 @@ watch(store.auth, () => {
       <img :src="image" class="logo" alt="NoPWD logo" />
     </a>
   </div>
-  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :showButton="true" :isDark="false" secondary-dark="#242424" primary-dark="#ff0000" />
+  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :isDark="IsDark" secondary-dark="#242424" primary-dark="#ff0000" />
+  <button @click="flipIt()">Flip</button>
 </template>
 
 <style scoped>

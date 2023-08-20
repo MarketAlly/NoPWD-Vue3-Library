@@ -30,6 +30,8 @@
   "include": [
     "types.d.ts", 
     "nopwd-vue3-library.d.ts",
+    "src/components/index.ts", 
+    "src/components/main.ts", 
     "src/**/*.ts", 
     "src/**/*.png", 
     "src/**/*.d.ts", 

@@ -6,10 +6,10 @@ import serviceCall from './interface';
 import { type IValue, type apiResponse, type apiResponses, type INoPWDStore } from './interface';
 
 type EmitType = {
-  (event: 'Error', args: string): void;
-  (event: 'Redirect', args: string): void;
-  (event: 'Status', args: number): void;
-  (event: 'User', args: string): void;
+  (event: 'error', args: string): void;
+  (event: 'redirect', args: string): void;
+  (event: 'status', args: number): void;
+  (event: 'user', args: string): void;
 };
 
 export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
@@ -95,7 +95,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             code.value = res.code;
             auth.value = 1;
             setTimeout(checkQRLogin, 1000);
-            if (IsDark) {
+            if (IsDark.value) {
               Message.value = t('auth.codedark');
             } else {
               Message.value = t('auth.codelight');
@@ -108,19 +108,30 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
         }).catch((error: { message: string; }) => {
           console.log(error);
           if (emit)
-            emit("Error", error.message)
+            emit("error", error.message)
           is_error.value = true;
           Message.value = t('auth.codeerror');
           return -1;
         });
       } else {
-        if (IsDark) {
+        if (IsDark.value) {
           Message.value = t('auth.codedark');
         } else {
           Message.value = t('auth.codelight');
         }
         return checkQRLogin();
       }
+    }
+
+    function readMessage(showButton : boolean = false) {
+      if (is_error.value) {
+        Message.value = t('auth.codeerror');
+      } else if (IsDark.value) {
+        Message.value = t('auth.codedark');
+      } else if (!IsDark.value) {
+        Message.value = t('auth.codelight');
+      } 
+      return Message.value;
     }
 
     async function checkQRLogin(): Promise<number | undefined> {
@@ -138,22 +149,22 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             if (res.code > 0) {
               user_data.value = JSON.stringify(res.data);
               if (emit)
-                emit("User", user_data.value)
+                emit("user", user_data.value)
               auth.value = 2;
               setTimeout(checkAccess, 20000);
               if (emit)
-                emit("Redirect", appUrl.value)
+                emit("redirect", appUrl.value)
               if (emit)
-                emit("Status", auth.value)
+                emit("status", auth.value)
               return 1;
             } else if (res.code < 0) {
               auth.value = 0;
               if (emit)
-                emit("Status", auth.value)
+                emit("status", auth.value)
               return -1;
             } else {
               setTimeout(checkQRLogin, 1000);
-              if (IsDark) {
+              if (IsDark.value) {
                 Message.value = t('auth.codedark');
               } else {
                 Message.value = t('auth.codelight');
@@ -165,7 +176,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
           }
         }).catch((error: { message: string; }) => {
           if (emit)
-            emit("Error", error.message)
+            emit("error", error.message)
           if (logConsole.value)
             console.log(error);
           is_error.value = true;
@@ -195,17 +206,17 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             } else {
               auth.value = 0;
               if (emit)
-                emit("Status", auth.value)
+                emit("status", auth.value)
               user_data.value = '';
               if (emit)
-                emit("User", user_data.value)
+                emit("user", user_data.value)
               if (emit)
-                emit("Redirect", loginUrl.value)
+                emit("redirect", loginUrl.value)
             }
           }
         }).catch((error: { message: string; }) => {
           if (emit)
-            emit("Error", error.message)
+            emit("error", error.message)
           if (logConsole.value)
             console.log(error);
           is_error.value = true;
@@ -232,14 +243,14 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
           if (success.value) {
             auth.value = 0;
             if (emit)
-              emit("Status", auth.value)
+              emit("status", auth.value)
             user_data.value = '';
             if (emit)
-              emit("User", user_data.value)
+              emit("user", user_data.value)
             IDLogin.value = Guid.EMPTY.toString();
           }
           if (emit)
-            emit("Redirect", loginUrl.value)
+            emit("redirect", loginUrl.value)
         });
     }
 
@@ -250,6 +261,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
       code,
       IDLogin,
       QRCode,
+      IsDark,
       Message,
       is_error,
       loginQRCode,
@@ -259,6 +271,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
       config,
       setUrls,
       setRoutes,
+      readMessage,
       setBase
     };
   }

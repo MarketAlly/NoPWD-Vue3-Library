@@ -34,11 +34,13 @@ export interface INoPWDStore {
   QRCode: Ref<string>;
   Message: Ref<string>;
   user_data: Ref<string>;
+  IsDark: Ref<boolean>;
   is_error: Ref<boolean>;
   loginQRCode: () => Promise<number | undefined>;
   checkAccess: () => Promise<void>;
   checkQRLogin: () => Promise<number | undefined>;
   logout: () => Promise<void>;
+  readMessage: () => string;
   config: () => {
     headers: {
       Accept: string;

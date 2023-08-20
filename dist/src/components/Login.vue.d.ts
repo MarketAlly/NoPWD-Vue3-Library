@@ -3,10 +3,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
-    showButton: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
     primaryDark: {
         type: StringConstructor;
         default: string;
@@ -80,22 +76,24 @@ declare const _sfc_main: import("vue").DefineComponent<{
         default: string;
     };
 }, {
-    emit: (event: "Error" | "Redirect" | "Status" | "User", ...args: any[]) => void;
+    emit: (event: "error" | "redirect" | "status" | "user", ...args: any[]) => void;
     internalEmitHandler: (event: string, payload: any) => void;
     t: (key: string) => string;
     auth: import("vue").Ref<number>;
     loginQRCode: () => Promise<number | undefined>;
     checkQRLogin: () => Promise<number | undefined>;
     success: import("vue").Ref<boolean>;
+    IsDark: import("vue").Ref<boolean>;
     QRCode: import("vue").Ref<string>;
-    is_error: import("vue").Ref<boolean>;
     Message: import("vue").Ref<string>;
     IDLogin: import("vue").Ref<string>;
     setBase: (dev: string, prod: string) => void;
+    readMessage: () => string;
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
     setRoutes: (app: string, login: string) => void;
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
+    DarkMode: import("vue").ComputedRef<boolean>;
     props: any;
     clickHandler: () => void;
     readonly QRCodeVue3: any;
@@ -139,12 +137,8 @@ declare const _sfc_main: import("vue").DefineComponent<{
     }, {}>;
     readonly imageWhite: string;
     readonly imageBlack: string;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("Error" | "Redirect" | "Status" | "User")[], "Error" | "Redirect" | "Status" | "User", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("error" | "redirect" | "status" | "user")[], "error" | "redirect" | "status" | "user", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     isMobileScreen: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
-    showButton: {
         type: BooleanConstructor;
         default: boolean;
     };
@@ -227,7 +221,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     onUser?: ((...args: any[]) => any) | undefined;
 }, {
     isMobileScreen: boolean;
-    showButton: boolean;
     primaryDark: string;
     primaryLight: string;
     secondaryDark: string;

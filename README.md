@@ -35,7 +35,6 @@ import Login from '@marketally/nopwd-vue3-library';
 <template>
   <Login 
     :isMobileScreen="true"
-    :showButton="true"
     :isDark="false"
     primaryDark="#c48a56"
     secondaryDark="#18181b"
@@ -53,7 +52,6 @@ You can also listen to events emitted by the component, such as `Error`, `Redire
 | Property          | Type     | Default Value | Description                                                                                                                                                          |
 |-------------------|----------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `isMobileScreen`  | Boolean  | `false`      | Determines if the screen size is mobile.                                                                                                                             |
-| `showButton`      | Boolean  | `false`      | Determines if a button should be displayed below the QR code.                                                                                                        |
 | `primaryDark`     | String   | `#c48a56`    | Primary dark color theme.                                                                                                                                            |
 | `primaryLight`    | String   | `#606C38`    | Primary light color theme.                                                                                                                                           |
 | `secondaryDark`   | String   | `#18181b`    | Secondary dark color theme.                                                                                                                                          |

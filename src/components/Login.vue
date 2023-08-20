@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import useNoPWD from '@/store'
 import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
@@ -7,38 +7,48 @@ import Preloader from './Preloader.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
 const emit = defineEmits<{
-    (event: 'Error', args: string): void;
-    (event: 'Redirect', args: string): void;
-    (event: 'Status', args: number): void;
-    (event: 'User', args: string): void;
+    (event: 'error', args: string): void;
+    (event: 'redirect', args: string): void;
+    (event: 'status', args: number): void;
+    (event: 'user', args: string): void;
 }>();
 
 const internalEmitHandler = (event: string, payload: any) => {
-    if (event === 'Error') {
-        emit('Error', payload)
+    if (event === 'error') {
+        emit('error', payload)
         console.log('Error event received with payload:', payload);
-    } else if (event === 'Redirect') {
-        emit('Redirect', payload)
+    } else if (event === 'redirect') {
+        emit('redirect', payload)
         console.log('Redirect event received with payload:', payload);
-    } else if (event === 'Status') {
-        emit('Status', payload)
+    } else if (event === 'status') {
+        emit('status', payload)
         console.log('Status event received with payload:', payload);
-    } else if (event === 'User') {
-        emit('User', payload)
+    } else if (event === 'user') {
+        emit('user', payload)
         console.log('User event received with payload:', payload);
     }
 }
 
 const { t } = useTranslations();
-const { auth, loginQRCode, checkQRLogin, success, QRCode, is_error, Message, IDLogin, setBase, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
+const { auth, loginQRCode, checkQRLogin, success, IsDark, QRCode, Message, IDLogin, setBase, readMessage, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
+
+const DarkMode = computed(() => {
+    IsDark.value = props.isDark
+    if (success.value === true) {
+        Message.value = readMessage()
+    }
+    return props.isDark
+})
 
 import imageWhite from '@/assets/nopwd_white.png';
 import imageBlack from '@/assets/nopwd_black.png';
 import { Guid } from 'guid-typescript';
+import { watch } from 'fs';
 
 tryOnMounted(() => {
+    IsDark.value = props.isDark
     setBase(props.configDev, props.configProduction)
     setRoutes(props.configApp, props.configLogin)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
@@ -58,10 +68,6 @@ tryOnMounted(() => {
 
 const props = defineProps({
     isMobileScreen: {
-        type: Boolean,
-        default: false
-    },
-    showButton: {
         type: Boolean,
         default: false
     },
@@ -154,7 +160,7 @@ function clickHandler() {
             <div style="text-align: center">
                 <div @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
                     <QRCodeVue3
-                        v-if="props.isDark"
+                        v-if="DarkMode"
                         :key="QRCode"
                         :width="300"
                         :height="300"
@@ -188,7 +194,7 @@ function clickHandler() {
                         :download="false"
                     />
                     <QRCodeVue3
-                        v-if="!props.isDark"
+                        v-if="!DarkMode"
                         :key="QRCode"
                         :width="300"
                         :height="300"
@@ -225,29 +231,18 @@ function clickHandler() {
                 <div v-else-if="success && props.isMobileScreen" style="text-align: center">
                     <button v-if="showQRCode" 
                         style="width: 300px; height: 300px;"
-                        :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
-                        :href="QRCode"
+                        :style="[DarkMode ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
+                        @click="clickHandler" @click.prevent="clickHandler"
                         >
                         <img width="150" :src="logoDark.length == 0 ? imageBlack : ''" />
                         <br/><br/><span>{{ t('auth.login') }}</span>
                     </button>
                 </div>
-                <div v-else-if="!success" style="text-align: center">
-                    <Preloader width="300px" :disabled="false" :dark="props.isDark" height="300px"  />
+                <div v-else style="text-align: center">
+                    <Preloader width="300px" :disabled="false" :dark="DarkMode" height="300px"  />
                 </div>
-                <div v-html="Message" style="text-align: center"></div>
+                <div v-if="(success && !props.isMobileScreen) || !success" v-html="Message" style="text-align: center"></div>
             </div>
-        </div>
-        <div v-if="success && !props.isMobileScreen && props.showButton" style="text-align: center">
-            <br/>   
-            <button v-if="showQRCode" 
-                style="width: 300px; height: 120px;" 
-                :style="[props.isDark ? { backgroundColor: props.primaryDark, color: props.accentColor } : { backgroundColor: props.primaryLight, color: props.accentColor }]"
-                :href="QRCode"
-                >
-                <img width="80" :src="logoDark.length == 0 ? imageBlack : ''" />
-                <br/><span>{{ t('auth.appinstalled') }}</span>
-            </button>
         </div>
     </div>
 </template>

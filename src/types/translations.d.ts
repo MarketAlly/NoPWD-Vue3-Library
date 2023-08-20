@@ -1,5 +1,4 @@
 export interface Translations {
-    "auth.appinstalled": string;
     "auth.codedark": string;
     "auth.codelight": string;
     "auth.codeerror": string;
