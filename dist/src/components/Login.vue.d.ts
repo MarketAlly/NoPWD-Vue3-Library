@@ -19,6 +19,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    hideText: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     isDark: {
         type: BooleanConstructor;
         default: boolean;
@@ -94,10 +98,12 @@ declare const _sfc_main: import("vue").DefineComponent<{
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
     DarkMode: import("vue").ComputedRef<boolean>;
+    acount: import("vue").Ref<number>;
+    resetTimeout: () => void;
     props: any;
     clickHandler: () => void;
     readonly QRCodeVue3: any;
-    Preloader: import("vue").DefineComponent<{
+    Prelogin: import("vue").DefineComponent<{
         width: {
             type: StringConstructor;
             default: string;
@@ -157,6 +163,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
     secondaryLight: {
         type: StringConstructor;
         default: string;
+    };
+    hideText: {
+        type: BooleanConstructor;
+        default: boolean;
     };
     isDark: {
         type: BooleanConstructor;
@@ -225,6 +235,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     primaryLight: string;
     secondaryDark: string;
     secondaryLight: string;
+    hideText: boolean;
     isDark: boolean;
     positionLight: string;
     positionDark: string;

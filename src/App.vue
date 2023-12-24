@@ -28,7 +28,7 @@ watch(store.auth, () => {
       <img :src="image" class="logo" alt="NoPWD logo" />
     </a>
   </div>
-  <Login :isMobileScreen="false" configDev="https://localhost:7251/" :isDark="IsDark" secondary-dark="#242424" primary-dark="#ff0000" />
+  <Login :isMobileScreen="false" config-production="https://nopwd.azurewebsites.net/" configDev="https://nopwd.azurewebsites.net/" :isDark="IsDark" secondary-dark="#242424" primary-dark="#ff0000" />
   <button @click="flipIt()">Flip</button>
 </template>
 

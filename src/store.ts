@@ -19,25 +19,28 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     const confirmUrl = useStorage('nopwd_confirm','api/confirmaccess', sessionStorage);
     const logoutUrl = useStorage('nopwd_logout','api/logout', sessionStorage);
 
-    const devUrl = useStorage('nopwd_dev','http://localhost:3000/', sessionStorage);
+    const devUrl = useStorage('nopwd_dev','https://marketally.ngrok.io/', sessionStorage);
     const prodUrl = useStorage('nopwd_prod','https://www.nopwd.com/', sessionStorage);
 
     const appUrl = useStorage('nopwd_app','/app', sessionStorage);
     const loginUrl = useStorage('nopwd_login','/auth/login', sessionStorage);
     const logConsole = useStorage('nopwd_log', false, sessionStorage);
+    const regionId = useStorage('nopwd_region', 1, sessionStorage);
 
     const success = ref(false);
+    const hideText = ref(false);
     const is_error = ref(false);
     const code = ref(0);
     const IDLogin = useStorage('nopwd_loginid', Guid.EMPTY, sessionStorage);
     const auth = useStorage('nopwd_auth', 0, sessionStorage);
     const user_data = useStorage('nopwd_session', '', sessionStorage);
 
-    function setBase(dev: string, prod: string) {
+    function setBase(dev: string, prod: string, region: number) {
       if (dev != undefined && dev != null && dev != '')
         devUrl.value = dev;
       if (prod != undefined && prod != null && prod != '')
         prodUrl.value = prod;
+      regionId.value = region;
     }
 
     function setRoutes(app: string, login: string) {
@@ -76,6 +79,9 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     const rqValue = ref<IValue>({ id: IDLogin.value, code: null, value: null, subid: null, userid: null, count: null, page: null, fromdate: null });
 
     async function loginQRCode(): Promise<number | undefined> {
+      if (auth.value <= -1) {
+        return auth.value; 
+      }
       IDLogin.value = Guid.EMPTY;
       if (IDLogin.value === Guid.EMPTY.toString()) {
         Message.value = t('auth.loading');
@@ -83,14 +89,14 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
         rqValue.value.id = IDLogin.value;
         if (logConsole.value)
           console.log('Login: ' + IDLogin.value);
-        serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+        serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
         let aURL = serviceCall.getBaseURL() + requestUrl.value
         return await serviceCall.apiClient.get<apiResponse>(aURL, config()).then((response: { data: apiResponse; }) => {
           const res: apiResponse = response.data;
           if (res.success) {
             Message.value = '';
-            QRCode.value = "https://www.nopwd.com?loginid=" + IDLogin.value;
-
+            QRCode.value = "https://www.nopwd.com?r=" + regionId.value + "&l=" + IDLogin.value;
+            console.log(QRCode.value);
             success.value = res.success;
             code.value = res.code;
             auth.value = 1;
@@ -135,7 +141,10 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     }
 
     async function checkQRLogin(): Promise<number | undefined> {
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      if (auth.value <= -1) {
+        return auth.value; 
+      }
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
       let aURL = serviceCall.getBaseURL() + verifyUrl.value
       if (logConsole.value)
           console.log('Check: ' + IDLogin.value);
@@ -189,7 +198,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
       if (auth.value < 2) {
         return;
       }
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
       if (logConsole.value)
           console.log('Check: ' + IDLogin.value);
       let aURL = serviceCall.getBaseURL() + confirmUrl.value
@@ -206,7 +215,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             } else {
               auth.value = 0;
               if (emit)
-                emit("status", auth.value)
+                emit("status", res.code)
               user_data.value = '';
               if (emit)
                 emit("user", user_data.value)
@@ -225,11 +234,11 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     }
 
     async function logout() {
-      if (auth.value == 0) {
+      if (auth.value <= 0) {
         return; 
       }
-      auth.value = 0;
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
+      auth.value = -1;
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
       if (logConsole.value)
           console.log('Logout: ' + IDLogin.value);
       let aURL = serviceCall.getBaseURL() + logoutUrl.value
@@ -239,9 +248,8 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
           const res: apiResponse = response.data;
           success.value = res.success;
           code.value = res.code;
-
+          auth.value = 0;
           if (success.value) {
-            auth.value = 0;
             if (emit)
               emit("status", auth.value)
             user_data.value = '';
@@ -252,6 +260,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
           if (emit)
             emit("redirect", loginUrl.value)
         });
+        auth.value = 0;
     }
 
     return {

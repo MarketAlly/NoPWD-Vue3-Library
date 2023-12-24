@@ -15,6 +15,7 @@ declare module '@marketally/nopwd-vue3-library' {
       primaryLight?: string;
       secondaryDark?: string;
       secondaryLight?: string;
+      hideText?: Ref<boolean>;
       isDark?: boolean;
       positionLight?: string;
       positionDark?: string;
@@ -31,7 +32,7 @@ declare module '@marketally/nopwd-vue3-library' {
       configLogout?: string;
     }
     
-    interface PreloaderProps {
+    interface PreloginProps {
         width?: string;
         height?: string;
         mobileWidth?: string;
@@ -64,12 +65,12 @@ declare module '@marketally/nopwd-vue3-library' {
     function useNoPWD(emit?: EmitType): UseNoPWDResult;
 
     const LoginComponent: DefineComponent<NoPWDProps>; 
-    const PreloaderComponent: DefineComponent<PreloaderProps>; 
+    const PreloginComponent: DefineComponent<PreloginProps>; 
 
     export default LoginComponent;
     export {
         LoginComponent as Login,
-        PreloaderComponent as Preloader,
+        PreloginComponent as Prelogin,
         useNoPWD
     };
 }

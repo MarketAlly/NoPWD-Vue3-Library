@@ -12,7 +12,7 @@ let productionURL: string | undefined = '';
 
 const serviceCall = {
   apiClient: apiClient,
-  setBaseURL: function(devURL: string | undefined, prodURL: string | undefined) {
+  setBaseURL: function(devURL: string | undefined, prodURL: string | undefined, region : number) {
     if (isLocalhost) {  
       this.apiClient.defaults.baseURL = devURL || developURL;
     } else {
@@ -50,7 +50,7 @@ export interface INoPWDStore {
   };
   setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
   setRoutes: (app: string, login: string) => void;
-  setBase: (dev: string, prod: string) => void;
+  setBase: (dev: string, prod: string, region: number) => void;
 }
 
 export default serviceCall

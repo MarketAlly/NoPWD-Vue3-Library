@@ -3,7 +3,7 @@ import { computed, ref, watchEffect } from 'vue';
 import useNoPWD from '@/store'
 import { useTranslations } from '../useTranslations';
 import QRCodeVue3 from 'qrcode-vue3'
-import Preloader from './Preloader.vue'
+import Prelogin from './Prelogin.vue'
 import { tryOnMounted, useStorage } from '@vueuse/core';
 
 const emit = defineEmits<{
@@ -45,18 +45,30 @@ const DarkMode = computed(() => {
 import imageWhite from '@/assets/nopwd_white.png';
 import imageBlack from '@/assets/nopwd_black.png';
 import { Guid } from 'guid-typescript';
-import { watch } from 'fs';
 
-tryOnMounted(() => {
-    IsDark.value = props.isDark
-    setBase(props.configDev, props.configProduction)
-    setRoutes(props.configApp, props.configLogin)
-    setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
+const acount = ref(0)
+
+function resetTimeout() {
+    success.value = false
     if (auth.value < 2 || IDLogin.value === Guid.create().toString()) {
         loginQRCode()
     } else {
         checkQRLogin()
     }
+    if (auth.value === -1) {
+        acount.value++
+        if (acount.value > 3)
+            auth.value = 0;
+        setTimeout(resetTimeout, 500)
+    }
+}
+
+tryOnMounted(() => {
+    IsDark.value = props.isDark
+    setBase(props.configDev, props.configProduction, props.region)
+    setRoutes(props.configApp, props.configLogin)
+    setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
+    setTimeout(resetTimeout, 500)
     watchEffect(() => {
         if (success.value === true) {
             showQRCode.value = true
@@ -86,6 +98,10 @@ const props = defineProps({
     secondaryLight: {
         type: String,
         default: '#ffffff',
+    },
+    hideText: {
+        type: Boolean,
+        default: false,
     },
     isDark: {
         type: Boolean,
@@ -142,6 +158,10 @@ const props = defineProps({
     configLogout: {
         type: String,
         default: '',
+    },
+    region: {
+        type: Number,
+        default: 1,
     }
 })
 
@@ -158,7 +178,7 @@ function clickHandler() {
     <div>
         <div>
             <div style="text-align: center">
-                <div @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
+                <div :title="t('auth.codelight')" @click="clickHandler" @click.prevent="clickHandler" target="_blank" v-if="success && !props.isMobileScreen" style="text-align: center; cursor: pointer;">
                     <QRCodeVue3
                         v-if="DarkMode"
                         :key="QRCode"
@@ -235,13 +255,13 @@ function clickHandler() {
                         @click="clickHandler" @click.prevent="clickHandler"
                         >
                         <img width="150" :src="logoDark.length == 0 ? imageBlack : ''" />
-                        <br/><br/><span>{{ t('auth.login') }}</span>
+                        <br/><br/><span v-if="!hideText">{{ t('auth.login') }}</span>
                     </button>
                 </div>
-                <div v-else style="text-align: center">
-                    <Preloader width="300px" :disabled="false" :dark="DarkMode" height="300px"  />
+                <div v-else style="text-align: center; width:300px; height: 300px;">
+                    <Prelogin width="300px" :disabled="false" :dark="DarkMode" height="300px"/>
                 </div>
-                <div v-if="(success && !props.isMobileScreen) || !success" v-html="Message" style="text-align: center"></div>
+                <div v-if="((success && !props.isMobileScreen) || !success) && !hideText" v-html="Message" style="text-align: center"></div>
             </div>
         </div>
     </div>
