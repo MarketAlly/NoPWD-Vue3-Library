@@ -1795,7 +1795,7 @@ function ta(A) {
       let E = dA.getBaseURL() + e.value;
       return await dA.apiClient.get(E, y()).then((R) => {
         const O = R.data;
-        return O.success ? (C.value = "", p.value = "https://www.nopwd.com?r=" + g.value + "&l=" + D.value, console.log(p.value), a.value = O.success, J.value = O.code, k.value = 1, setTimeout(l, 1e3), M.value ? C.value = N("auth.codedark") : C.value = N("auth.codelight"), 1) : (C.value = N("auth.codeerror"), -1);
+        return O.success ? (C.value = "", p.value = "https://www.nopwd.com?r=" + g.value + "&l=" + D.value, console.log(p.value), a.value = O.success, J.value = O.code, k.value = 1, setTimeout(l, 1e3), M.value ? C.value = N("auth.codedark") : C.value = N("auth.codelight"), 1) : (f.value && console.log(O.message), C.value = N("auth.codeerror"), -1);
       }).catch((R) => (console.log(R), A && A("error", R.message), Q.value = !0, C.value = N("auth.codeerror"), -1));
     } else
       return M.value ? C.value = N("auth.codedark") : C.value = N("auth.codelight"), l();
@@ -1812,7 +1812,7 @@ function ta(A) {
       const O = R.data;
       if (O.success)
         return a.value = O.success, J.value = O.code, O.code > 0 ? (T.value = JSON.stringify(O.data), A && A("user", T.value), k.value = 2, setTimeout(w, 2e4), A && A("redirect", i.value), A && A("status", k.value), 1) : O.code < 0 ? (k.value = 0, A && A("status", k.value), -1) : (setTimeout(l, 1e3), M.value ? C.value = N("auth.codedark") : C.value = N("auth.codelight"), 0);
-      await v();
+      f.value && console.log(O.message), await v();
     }).catch((R) => (A && A("error", R.message), f.value && console.log(R), Q.value = !0, C.value = N("auth.codeerror"), -1));
   }
   async function w() {

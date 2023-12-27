@@ -109,6 +109,8 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             }
             return 1;
           } else {
+            if (logConsole.value)
+              console.log(res.message);
             Message.value = t('auth.codeerror');
             return -1;
           }
@@ -182,6 +184,8 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
               return 0;
             }
           } else {
+            if (logConsole.value)
+                console.log(res.message);
             await loginQRCode()
           }
         }).catch((error: { message: string; }) => {
