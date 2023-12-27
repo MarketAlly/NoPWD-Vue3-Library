@@ -65,7 +65,7 @@ function resetTimeout() {
 
 tryOnMounted(() => {
     IsDark.value = props.isDark
-    setBase(props.configDev, props.configProduction, props.region)
+    setBase(props.configDev, props.configProduction, props.region, props.errorLog)
     setRoutes(props.configApp, props.configLogin)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
     setTimeout(resetTimeout, 500)
@@ -162,6 +162,10 @@ const props = defineProps({
     region: {
         type: Number,
         default: 1,
+    },
+    errorLog: {
+        type: Boolean,
+        default: false,
     }
 })
 

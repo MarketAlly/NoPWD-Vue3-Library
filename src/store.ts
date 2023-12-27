@@ -35,12 +35,13 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     const auth = useStorage('nopwd_auth', 0, sessionStorage);
     const user_data = useStorage('nopwd_session', '', sessionStorage);
 
-    function setBase(dev: string, prod: string, region: number) {
+    function setBase(dev: string, prod: string, region: number, error: boolean) {
       if (dev != undefined && dev != null && dev != '')
         devUrl.value = dev;
       if (prod != undefined && prod != null && prod != '')
         prodUrl.value = prod;
       regionId.value = region;
+      logConsole.value = error;
     }
 
     function setRoutes(app: string, login: string) {

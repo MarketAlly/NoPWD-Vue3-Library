@@ -79,6 +79,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    region: {
+        type: NumberConstructor;
+        default: number;
+    };
+    errorLog: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }, {
     emit: (event: "error" | "redirect" | "status" | "user", ...args: any[]) => void;
     internalEmitHandler: (event: string, payload: any) => void;
@@ -91,7 +99,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     QRCode: import("vue").Ref<string>;
     Message: import("vue").Ref<string>;
     IDLogin: import("vue").Ref<string>;
-    setBase: (dev: string, prod: string) => void;
+    setBase: (dev: string, prod: string, region: number, error: boolean) => void;
     readMessage: () => string;
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
     setRoutes: (app: string, login: string) => void;
@@ -224,6 +232,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    region: {
+        type: NumberConstructor;
+        default: number;
+    };
+    errorLog: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }>> & {
     onError?: ((...args: any[]) => any) | undefined;
     onRedirect?: ((...args: any[]) => any) | undefined;
@@ -250,5 +266,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
     configVerify: string;
     configConfirm: string;
     configLogout: string;
+    region: number;
+    errorLog: boolean;
 }, {}>;
 export default _sfc_main;
