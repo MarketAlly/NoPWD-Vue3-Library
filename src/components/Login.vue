@@ -16,16 +16,24 @@ const emit = defineEmits<{
 const internalEmitHandler = (event: string, payload: any) => {
     if (event === 'error') {
         emit('error', payload)
-        console.log('Error event received with payload:', payload);
+        if (props.errorLog) {
+            console.log('Error event received with payload:', payload);
+        }
     } else if (event === 'redirect') {
         emit('redirect', payload)
-        console.log('Redirect event received with payload:', payload);
+        if (props.errorLog) {
+            console.log('Redirect event received with payload:', payload);
+        }
     } else if (event === 'status') {
         emit('status', payload)
-        console.log('Status event received with payload:', payload);
+        if (props.errorLog) {
+            console.log('Status event received with payload:', payload);
+        }
     } else if (event === 'user') {
         emit('user', payload)
-        console.log('User event received with payload:', payload);
+        if (props.errorLog) {
+            console.log('User event received with payload:', payload);
+        }
     }
 }
 
@@ -65,8 +73,8 @@ function resetTimeout() {
 
 tryOnMounted(() => {
     IsDark.value = props.isDark
-    setBase(props.configDev, props.configProduction, props.region, props.errorLog)
-    setRoutes(props.configApp, props.configLogin)
+    setBase(props.configDev, props.configProduction, props.region, props.errorLog, props.interval, props.accessTimeout)
+    setRoutes(props.configApp, props.configLogin, props.enableCheck)
     setUrls(props.configRequest, props.configVerify, props.configConfirm, props.configLogout)
     setTimeout(resetTimeout, 500)
     watchEffect(() => {
@@ -166,7 +174,19 @@ const props = defineProps({
     errorLog: {
         type: Boolean,
         default: false,
-    }
+    },
+    enableCheck: {
+        type: Boolean,
+        default: false,
+    },
+    interval: {
+        type: Number,
+        default: 1000,
+    },
+    accessTimeout: {
+        type: Number,
+        default: 20000,
+    },
 })
 
 function clickHandler() {

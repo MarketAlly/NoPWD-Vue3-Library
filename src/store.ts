@@ -26,6 +26,10 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     const loginUrl = useStorage('nopwd_login','/auth/login', sessionStorage);
     const logConsole = useStorage('nopwd_log', false, sessionStorage);
     const regionId = useStorage('nopwd_region', 1, sessionStorage);
+    const enableCheck = useStorage('nopwd_check', false, sessionStorage);
+
+    const intervalId = useStorage('nopwd_interval', 1000, sessionStorage);
+    const accessId = useStorage('nopwd_access', 20000, sessionStorage);
 
     const success = ref(false);
     const hideText = ref(false);
@@ -35,20 +39,23 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     const auth = useStorage('nopwd_auth', 0, sessionStorage);
     const user_data = useStorage('nopwd_session', '', sessionStorage);
 
-    function setBase(dev: string, prod: string, region: number, error: boolean) {
+    function setBase(dev: string, prod: string, region: number, error: boolean, interval : number, access : number) {
       if (dev != undefined && dev != null && dev != '')
         devUrl.value = dev;
       if (prod != undefined && prod != null && prod != '')
         prodUrl.value = prod;
       regionId.value = region;
       logConsole.value = error;
+      intervalId.value = interval;
+      accessId.value = access;
     }
 
-    function setRoutes(app: string, login: string) {
+    function setRoutes(app: string, login: string, loginCheck: boolean = false) {
       if (app != undefined && app != null && app != '')
         appUrl.value = app;
       if (login != undefined && login != null && login != '')
         loginUrl.value = login;
+      enableCheck.value = loginCheck;
     }
 
     function setUrls(request: string, verify: string, confirm: string, logout: string) {
@@ -90,7 +97,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
         rqValue.value.id = IDLogin.value;
         if (logConsole.value)
           console.log('Login: ' + IDLogin.value);
-        serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
+        serviceCall.setBaseURL(devUrl.value, prodUrl.value);
         let aURL = serviceCall.getBaseURL() + requestUrl.value
         return await serviceCall.apiClient.get<apiResponse>(aURL, config()).then((response: { data: apiResponse; }) => {
           const res: apiResponse = response.data;
@@ -101,7 +108,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             success.value = res.success;
             code.value = res.code;
             auth.value = 1;
-            setTimeout(checkQRLogin, 1000);
+            setTimeout(checkQRLogin, intervalId.value);
             if (IsDark.value) {
               Message.value = t('auth.codedark');
             } else {
@@ -147,7 +154,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
       if (auth.value <= -1) {
         return auth.value; 
       }
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
       let aURL = serviceCall.getBaseURL() + verifyUrl.value
       if (logConsole.value)
           console.log('Check: ' + IDLogin.value);
@@ -163,7 +170,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
               if (emit)
                 emit("user", user_data.value)
               auth.value = 2;
-              setTimeout(checkAccess, 20000);
+              setTimeout(checkAccess, accessId.value);
               if (emit)
                 emit("redirect", appUrl.value)
               if (emit)
@@ -175,7 +182,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
                 emit("status", auth.value)
               return -1;
             } else {
-              setTimeout(checkQRLogin, 1000);
+              setTimeout(checkQRLogin, intervalId.value);
               if (IsDark.value) {
                 Message.value = t('auth.codedark');
               } else {
@@ -200,10 +207,12 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
     }
 
     async function checkAccess() {
+      if (enableCheck.value == false)
+        return;
       if (auth.value < 2) {
         return;
       }
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
       if (logConsole.value)
           console.log('Check: ' + IDLogin.value);
       let aURL = serviceCall.getBaseURL() + confirmUrl.value
@@ -216,7 +225,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             success.value = res.success;
             code.value = res.code;
             if (res.code > 0) {
-              setTimeout(checkAccess, 20000);
+              setTimeout(checkAccess, accessId.value);
             } else {
               auth.value = 0;
               if (emit)
@@ -243,7 +252,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
         return; 
       }
       auth.value = -1;
-      serviceCall.setBaseURL(devUrl.value, prodUrl.value, regionId.value);
+      serviceCall.setBaseURL(devUrl.value, prodUrl.value);
       if (logConsole.value)
           console.log('Logout: ' + IDLogin.value);
       let aURL = serviceCall.getBaseURL() + logoutUrl.value

@@ -87,6 +87,18 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    enableCheck: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    interval: {
+        type: NumberConstructor;
+        default: number;
+    };
+    accessTimeout: {
+        type: NumberConstructor;
+        default: number;
+    };
 }, {
     emit: (event: "error" | "redirect" | "status" | "user", ...args: any[]) => void;
     internalEmitHandler: (event: string, payload: any) => void;
@@ -99,10 +111,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
     QRCode: import("vue").Ref<string>;
     Message: import("vue").Ref<string>;
     IDLogin: import("vue").Ref<string>;
-    setBase: (dev: string, prod: string, region: number, error: boolean) => void;
+    setBase: (dev: string, prod: string, region: number, error: boolean, interval: number, access: number) => void;
     readMessage: () => string;
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
-    setRoutes: (app: string, login: string) => void;
+    setRoutes: (app: string, login: string, eCheck: boolean) => void;
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
     DarkMode: import("vue").ComputedRef<boolean>;
@@ -240,6 +252,18 @@ declare const _sfc_main: import("vue").DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    enableCheck: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    interval: {
+        type: NumberConstructor;
+        default: number;
+    };
+    accessTimeout: {
+        type: NumberConstructor;
+        default: number;
+    };
 }>> & {
     onError?: ((...args: any[]) => any) | undefined;
     onRedirect?: ((...args: any[]) => any) | undefined;
@@ -268,5 +292,8 @@ declare const _sfc_main: import("vue").DefineComponent<{
     configLogout: string;
     region: number;
     errorLog: boolean;
+    enableCheck: boolean;
+    interval: number;
+    accessTimeout: number;
 }, {}>;
 export default _sfc_main;

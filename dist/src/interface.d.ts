@@ -1,7 +1,7 @@
 import { Ref } from 'vue';
 declare const serviceCall: {
     apiClient: import("axios").AxiosInstance;
-    setBaseURL: (devURL: string | undefined, prodURL: string | undefined, region: number) => void;
+    setBaseURL: (devURL: string | undefined, prodURL: string | undefined) => void;
     getBaseURL: () => string | undefined;
 };
 export interface INoPWDStore {
@@ -27,8 +27,8 @@ export interface INoPWDStore {
         };
     };
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
-    setRoutes: (app: string, login: string) => void;
-    setBase: (dev: string, prod: string, region: number, error: boolean) => void;
+    setRoutes: (app: string, login: string, eCheck: boolean) => void;
+    setBase: (dev: string, prod: string, region: number, error: boolean, interval: number, access: number) => void;
 }
 export default serviceCall;
 export interface IValue {
