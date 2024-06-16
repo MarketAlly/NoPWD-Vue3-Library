@@ -115,11 +115,13 @@ declare const _sfc_main: import("vue").DefineComponent<{
     readMessage: () => string;
     setUrls: (request: string, verify: string, confirm: string, logout: string) => void;
     setRoutes: (app: string, login: string, eCheck: boolean) => void;
+    is_error: import("vue").Ref<boolean>;
     showQRCode: import("vue").Ref<boolean>;
     defaultLocale: import("@vueuse/shared").RemovableRef<string>;
     DarkMode: import("vue").ComputedRef<boolean>;
     acount: import("vue").Ref<number>;
     resetTimeout: () => void;
+    refreshPage: () => void;
     props: any;
     clickHandler: () => void;
     readonly QRCodeVue3: any;

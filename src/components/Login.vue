@@ -38,7 +38,7 @@ const internalEmitHandler = (event: string, payload: any) => {
 }
 
 const { t } = useTranslations();
-const { auth, loginQRCode, checkQRLogin, success, IsDark, QRCode, Message, IDLogin, setBase, readMessage, setUrls, setRoutes } = useNoPWD(internalEmitHandler);
+const { auth, loginQRCode, checkQRLogin, success, IsDark, QRCode, Message, IDLogin, setBase, readMessage, setUrls, setRoutes, is_error } = useNoPWD(internalEmitHandler);
 const showQRCode = ref(false)
 const defaultLocale = useStorage('locale', 'en')
 
@@ -69,6 +69,10 @@ function resetTimeout() {
             auth.value = 0;
         setTimeout(resetTimeout, 500)
     }
+}
+
+function refreshPage() {
+  window.location.reload();
 }
 
 tryOnMounted(() => {
@@ -209,7 +213,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? imageBlack : ''"
+                        :image="logoDark.length == 0 ? imageWhite : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -243,7 +247,7 @@ function clickHandler() {
                         :width="300"
                         :height="300"
                         :value="QRCode"
-                        :image="logoDark.length == 0 ? imageWhite : ''"
+                        :image="logoDark.length == 0 ? imageBlack : ''"
                         :qr-options="{
                             typeNumber: 0,
                             mode: 'Byte',
@@ -283,7 +287,10 @@ function clickHandler() {
                     </button>
                 </div>
                 <div v-else style="text-align: center; width:300px; height: 300px;">
-                    <Prelogin width="300px" :disabled="false" :dark="DarkMode" height="300px"/>
+                    <div @click="refreshPage" @click.prevent="refreshPage" v-if="is_error" style="width:300px;height:300px; align-items: middle;cursor: pointer;">
+                        <i class="fas fa-unlink" style="font-size: 155px;color:red; padding:10px; padding-top: 60px; vertical-align: middle;" aria-hidden="true"></i>
+                    </div>
+                    <Prelogin width="300px" v-if="!is_error" :disabled="false" :dark="DarkMode" height="300px"/>
                 </div>
                 <div v-if="((success && !props.isMobileScreen) || !success) && !hideText" v-html="Message" style="text-align: center"></div>
             </div>

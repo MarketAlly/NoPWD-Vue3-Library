@@ -92,6 +92,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
       }
       IDLogin.value = Guid.EMPTY;
       if (IDLogin.value === Guid.EMPTY.toString()) {
+        is_error.value = false
         Message.value = t('auth.loading');
         IDLogin.value = Guid.create().toString();
         rqValue.value.id = IDLogin.value;
@@ -116,12 +117,14 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             }
             return 1;
           } else {
+            is_error.value = true
             if (logConsole.value)
               console.log(res.message);
             Message.value = t('auth.codeerror');
             return -1;
           }
         }).catch((error: { message: string; }) => {
+          is_error.value = true
           console.log(error);
           if (emit)
             emit("error", error.message)
@@ -196,6 +199,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             await loginQRCode()
           }
         }).catch((error: { message: string; }) => {
+          is_error.value = true
           if (emit)
             emit("error", error.message)
           if (logConsole.value)
@@ -238,6 +242,7 @@ export default function useNoPWD(emit?: EmitType | undefined): INoPWDStore {
             }
           }
         }).catch((error: { message: string; }) => {
+          is_error.value = true
           if (emit)
             emit("error", error.message)
           if (logConsole.value)

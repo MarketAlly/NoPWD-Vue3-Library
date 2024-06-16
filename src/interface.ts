@@ -1,6 +1,6 @@
 import AxiosInstance from 'axios'
 import { Ref } from 'vue';
-const isLocalhost = window.location.hostname === 'localhost';
+const isLocalhost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
 
 const apiClient = AxiosInstance.create({
   baseURL: 'https://localhost:8080/',
