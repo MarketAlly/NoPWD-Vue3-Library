@@ -50,7 +50,7 @@ onMounted(() => {
   ></div>
 </template>
 
-<style scoped>
+<style>
 
 .skeleton-loader {
   width: v-bind('props.width');
