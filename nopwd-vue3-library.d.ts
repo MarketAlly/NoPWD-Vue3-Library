@@ -10,6 +10,7 @@ declare module '@marketally/nopwd-vue3-library' {
       };
 
     interface NoPWDProps {
+      instanceId?: string;
       isMobileScreen?: boolean;
       primaryDark?: string;
       primaryLight?: string;
@@ -45,12 +46,15 @@ declare module '@marketally/nopwd-vue3-library' {
         auth: Ref<number>;
         success: Ref<boolean>;
         code: Ref<number>;
+        mounted: Ref<boolean>;
         IDLogin: Ref<string>;
         QRCode: Ref<string>;
         Message: Ref<string>;
         user_data: Ref<string>;
         IsDark: Ref<boolean>;
         is_error: Ref<boolean>;
+        reset: () => Promise<void>;
+        setMounted: (value: boolean) => void;
         loginQRCode: () => Promise<number | undefined>;
         checkAccess: () => Promise<void>;
         checkQRLogin: () => Promise<number | undefined>;
@@ -62,8 +66,15 @@ declare module '@marketally/nopwd-vue3-library' {
         setBase: (dev: string, prod: string) => void;
     }
 
-    function useNoPWD(emit?: EmitType): UseNoPWDResult;
-
+    function useNoPWD(emit?: EmitType | undefined, instanceId: string = ''): UseNoPWDResult;
+    
+    const LoginComponent: DefineComponent<NoPWDProps, {}, {
+        /**
+         * Exposed reset method
+         */
+        reset: () => Promise<void>;
+        setMounted: (value: boolean) => void;
+    }>;
     const LoginComponent: DefineComponent<NoPWDProps>; 
     const PreloginComponent: DefineComponent<PreloginProps>; 
 

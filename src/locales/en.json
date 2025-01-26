@@ -4,5 +4,6 @@
   "auth.codeerror" : "Error requesting code, <br/>please refresh page.",
   "auth.loading" : "Loading access code, please wait...",
   "auth.prepare" : "Preparing interface...",
-  "auth.login" : "Click to Login"
+  "auth.login" : "Click to Login",
+  "auth.notmounted" : "QR Code authentication is currently disabled"
 }

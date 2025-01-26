@@ -8,12 +8,15 @@ export interface INoPWDStore {
     auth: Ref<number>;
     success: Ref<boolean>;
     code: Ref<number>;
+    mounted: Ref<boolean>;
     IDLogin: Ref<string>;
     QRCode: Ref<string>;
     Message: Ref<string>;
     user_data: Ref<string>;
     IsDark: Ref<boolean>;
     is_error: Ref<boolean>;
+    reset: () => Promise<void>;
+    setMounted: (value: boolean) => void;
     loginQRCode: () => Promise<number | undefined>;
     checkAccess: () => Promise<void>;
     checkQRLogin: () => Promise<number | undefined>;

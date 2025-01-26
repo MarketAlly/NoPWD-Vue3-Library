@@ -11,6 +11,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
     mobileHeight: StringConstructor;
     disabled: BooleanConstructor;
     dark: BooleanConstructor;
+    mounted: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }, {
     props: any;
     isDark: import("vue").Ref<boolean>;
@@ -30,7 +34,12 @@ declare const _sfc_main: import("vue").DefineComponent<{
     mobileHeight: StringConstructor;
     disabled: BooleanConstructor;
     dark: BooleanConstructor;
+    mounted: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
 }>>, {
+    mounted: boolean;
     width: string;
     height: string;
     disabled: boolean;

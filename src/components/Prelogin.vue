@@ -14,6 +14,10 @@ const props = defineProps({
   mobileHeight: String,
   disabled: Boolean,
   dark: Boolean,
+  mounted: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const isDark = ref(props.dark ?? false)
@@ -24,9 +28,9 @@ const loader = ref<InstanceType<typeof HTMLDivElement> | null>(null)
 
 onMounted(() => {
   watchEffect(() => {
-    if (props.disabled) return
+    if (props.disabled || !props.mounted) return  // Stop animation if disabled or not mounted
     if (loader.value !== null) {
-      let duration = 1.5; // initial duration in seconds
+      let duration = 1.5;
 
       let speedUp = setInterval(function() {
         duration -= 0.1; // decrease duration by 0.1 seconds each time
@@ -53,6 +57,10 @@ onMounted(() => {
 <style>
 
 .skeleton-loader {
+  position: relative;  /* Add this */
+  z-index: 1;         /* Add this */
+  opacity: 1;         /* Add this */
+  visibility: visible; /* Add this */
   width: v-bind('props.width');
   height: v-bind('props.height');
   display: block;
@@ -83,6 +91,11 @@ onMounted(() => {
 }
 
 .skeleton-loader_dark {
+  position: relative;  /* Add this */
+  z-index: 1;         /* Add this */
+  opacity: 1;         /* Add this */
+  visibility: visible; /* Add this */
+  display: block;     /* Verify this exists */
   width: v-bind('props.width');
   height: v-bind('props.height');
   display: block;
